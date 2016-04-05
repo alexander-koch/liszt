@@ -10,6 +10,7 @@ typedef struct {
 token_t* parser_peek(parser_t* parser, int offset) {
 	if(offset < 0) {
 		printf("Tried to look back at the buffer\n");
+		return NULL;
 	}
 
 	if(parser->position+offset >= parser->numTokens) {
@@ -20,13 +21,11 @@ token_t* parser_peek(parser_t* parser, int offset) {
 }
 
 // Parsing functions
-
 val_t* parse_number(parser_t* parser) {
 	token_t* num = parser_peek(parser, 0);
 	parser->position++;
 	return val_num(atof(num->value));
 }
-
 
 val_t* parse_expr(parser_t* parser);
 void parse_block(parser_t* parser, val_t* root) {
@@ -37,7 +36,6 @@ void parse_block(parser_t* parser, val_t* root) {
 }
 
 val_t* parse_sexpr(parser_t* parser) {
-	//token_t* begin = parser_peek(parser, 0);
 	parser->position++;
 
 	val_t* nodes = val_sexpr();
@@ -62,18 +60,12 @@ val_t* parse_symbol(parser_t* parser) {
 // parse main expression
 val_t* parse_expr(parser_t* parser) {
 	token_t* token = parser_peek(parser, 0);
-	//printf("%d: ", parser->position);
 	if(token == NULL) return NULL;
 
-	if(token->type == TOKEN_NUM) {
-		// printf("Number found\n");
+	if(token->type == TOKEN_NUM)
 		return parse_number(parser);
-	}
-
-	if(token->type == TOKEN_WORD || is_operator(token)) {
-		// printf("Symbol %s found\n", token->value);
+	if(token->type == TOKEN_WORD || is_operator(token))
 		return parse_symbol(parser);
-	}
 
 	if(token->type == TOKEN_QUOTE) {
 		parser->position++;
@@ -90,27 +82,19 @@ val_t* parse_expr(parser_t* parser) {
 		return expr;
 	}
 
-	if(token->type == TOKEN_LPAREN) {
-		// printf("++ Sexpr begin\n");
+	if(token->type == TOKEN_LPAREN)
 		return parse_sexpr(parser);
-	}
-
-	if(token->type == TOKEN_RPAREN) {
-		// printf("-- Sexpr end\n");
+	if(token->type == TOKEN_RPAREN)
 		return NULL;
-	}
 
 	printf("Error: Cannot parse: %s\n", token->value);
 	return NULL;
 }
 
 // main function
-
 val_t* parse_buffer(token_t* tokens, size_t numTokens) {
 	parser_t parser = {0, tokens, numTokens};
-
 	val_t* root = val_sexpr();
 	parse_block(&parser, root);
-
 	return root;
 }
