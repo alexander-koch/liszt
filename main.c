@@ -54,7 +54,7 @@ val_t* builtin_div(env_t* env, val_t* v) {
 	return builtin_op(env, v, "/");
 }
 
-val_t* builtin_quote(env_t* env, val_t* v) {
+val_t* builtin_list(env_t* env, val_t* v) {
 	v->type = VQEXPR;
 	return v;
 }
@@ -167,7 +167,7 @@ void eval_root(env_t* env, val_t* root) {
 }
 
 void env_add_builtins(env_t* env) {
-	env_add_builtin(env, "quote", builtin_quote);
+	env_add_builtin(env, "list", builtin_list);
 	env_add_builtin(env, "head", builtin_head);
 	env_add_builtin(env, "tail", builtin_tail);
 	env_add_builtin(env, "def", builtin_def);
