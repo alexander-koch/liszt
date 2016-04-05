@@ -7,7 +7,7 @@
 #include <core/util.h>
 #include <lexer/lexer.h>
 #include <parser/parser.h>
-#include <val.h>
+#include <core/val.h>
 
 #define VASSERT(v, msg) \
 	val_free(v); \

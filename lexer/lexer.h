@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <core/util.h>
-#include <adt/bytebuffer.h>
+#include <core/bytebuffer.h>
 
 // Location in file / code location
 typedef struct {

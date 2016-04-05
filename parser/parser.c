@@ -29,7 +29,6 @@ val_t* parse_number(parser_t* parser) {
 
 
 val_t* parse_expr(parser_t* parser);
-
 void parse_block(parser_t* parser, val_t* root) {
 	val_t* expr = NULL;
 	while((expr = parse_expr(parser)) != NULL) {

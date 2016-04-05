@@ -1,11 +1,10 @@
 CC = gcc
 CFLAGS = -I. -Wall
 FILES = core/util.c \
+		core/val.c \
+		core/bytebuffer.c \
 		lexer/lexer.c \
-		parser/parser.c \
-		adt/bytebuffer.c \
-		adt/vector.c \
-		val.c
+		parser/parser.c
 
 all:
 	$(CC) $(CFLAGS) -g -o sloth main.c $(FILES)

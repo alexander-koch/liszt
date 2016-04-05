@@ -3,8 +3,7 @@
 
 #include <stdlib.h>
 #include <lexer/lexer.h>
-#include <adt/vector.h>
-#include <val.h>
+#include <core/val.h>
 
 val_t* parse_buffer(token_t* tokens, size_t numTokens);
 
