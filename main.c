@@ -65,13 +65,20 @@ val_t* builtin_list(env_t* env, val_t* v) {
 }
 
 val_t* builtin_head(env_t* env, val_t* v) {
-	/*if(v->count == 1
-		|| v->cell[0]->type == VQEXPR
-		|| v->cell[0]->count != 0) {
-		val_free(v);
-		printf("Error in head function\n");
+	if(v->count != 1) {
+		VASSERT(v, "Too many arguments for function `head`.");
 		return NULL;
-	}*/
+	}
+
+	if(v->cell[0]->type != VQEXPR) {
+		VASSERT(v, "Expected Q-Expression for function `head`.");
+		return NULL;
+	}
+
+	if(v->cell[0]->count == 0) {
+		VASSERT(v, "Function `head` passed {}.");
+		return NULL;
+	}
 
 	val_t* x = val_take(v, 0);
 	while(x->count > 1) {val_free(val_pop(x, 1));}
@@ -79,14 +86,20 @@ val_t* builtin_head(env_t* env, val_t* v) {
 }
 
 val_t* builtin_tail(env_t* env, val_t* v) {
-	/*if(v->count == 1
-		|| v->cell[0]->type == VQEXPR
-		|| v->cell[0]->count != 0) {
-		val_free(v);
-		printf("Error in tail function\n");
+	if(v->count != 1) {
+		VASSERT(v, "Too many arguments for function `tail`.");
 		return NULL;
-	}*/
+	}
 
+	if(v->cell[0]->type != VQEXPR) {
+		VASSERT(v, "Expected Q-Expression for function `tail`.");
+		return NULL;
+	}
+
+	if(v->cell[0]->count == 0) {
+		VASSERT(v, "Function `tail` passed {}.");
+		return NULL;
+	}
 	val_t* x = val_take(v, 0);
 	val_free(val_pop(x, 0));
 	return x;
