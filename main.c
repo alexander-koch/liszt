@@ -3,13 +3,12 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include <core/util.h>
 #include <lexer/lexer.h>
 #include <parser/parser.h>
 #include <core/val.h>
 
-#define VASSERT(v, msg) \
+#define ERR(v, msg) \
 	val_free(v); \
 	printf(msg); \
 	env->error = 1
@@ -18,7 +17,7 @@ val_t* eval(env_t* env, val_t* v);
 val_t* builtin_op(env_t* env, val_t* v, char* op) {
 	for(unsigned i = 0; i < v->count; i++) {
 		if(v->cell[i]->type != VNUM) {
-			VASSERT(v, "Cannot operate on non-number!\n");
+			ERR(v, "Cannot operate on non-number!\n");
 			return NULL;
 		}
 	}
@@ -66,17 +65,17 @@ val_t* builtin_list(env_t* env, val_t* v) {
 
 val_t* builtin_head(env_t* env, val_t* v) {
 	if(v->count != 1) {
-		VASSERT(v, "Too many arguments for function `head`.");
+		ERR(v, "Too many arguments for function `head`.");
 		return NULL;
 	}
 
 	if(v->cell[0]->type != VQEXPR) {
-		VASSERT(v, "Expected Q-Expression for function `head`.");
+		ERR(v, "Expected Q-Expression for function `head`.");
 		return NULL;
 	}
 
 	if(v->cell[0]->count == 0) {
-		VASSERT(v, "Function `head` passed {}.");
+		ERR(v, "Function `head` passed {}.");
 		return NULL;
 	}
 
@@ -87,17 +86,17 @@ val_t* builtin_head(env_t* env, val_t* v) {
 
 val_t* builtin_tail(env_t* env, val_t* v) {
 	if(v->count != 1) {
-		VASSERT(v, "Too many arguments for function `tail`.");
+		ERR(v, "Too many arguments for function `tail`.");
 		return NULL;
 	}
 
 	if(v->cell[0]->type != VQEXPR) {
-		VASSERT(v, "Expected Q-Expression for function `tail`.");
+		ERR(v, "Expected Q-Expression for function `tail`.");
 		return NULL;
 	}
 
 	if(v->cell[0]->count == 0) {
-		VASSERT(v, "Function `tail` passed {}.");
+		ERR(v, "Function `tail` passed {}.");
 		return NULL;
 	}
 	val_t* x = val_take(v, 0);
@@ -108,20 +107,20 @@ val_t* builtin_tail(env_t* env, val_t* v) {
 
 val_t* builtin_def(env_t* env, val_t* v) {
 	if(v->cell[0]->type != VQEXPR) {
-		VASSERT(v, "Incorrect type for function 'def'\n");
+		ERR(v, "Incorrect type for function 'def'\n");
 		return NULL;
 	}
 
 	val_t* syms = v->cell[0];
 	for(unsigned i = 0; i < syms->count; i++) {
 		if(syms->cell[i]->type != VSYM) {
-			VASSERT(v, "'def' cannot define non-symbol\n");
+			ERR(v, "'def' cannot define non-symbol\n");
 			return NULL;
 		}
 	}
 
 	if(syms->count != v->count-1) {
-		VASSERT(v, "Incorrect number of symbols\n");
+		ERR(v, "Incorrect number of symbols\n");
 		return NULL;
 	}
 
@@ -148,7 +147,7 @@ val_t* eval_sexpr(env_t* env, val_t* v) {
 	val_t* f = val_pop(v, 0);
 	if(f->type != VFUN) {
 		val_free(f);
-		VASSERT(v, "First element must be a function\n");
+		ERR(v, "First element must be a function\n");
 		return NULL;
 	}
 
@@ -174,8 +173,6 @@ val_t* eval(env_t* env, val_t* v) {
 
 void eval_root(env_t* env, val_t* root) {
 	for(unsigned i = 0; i < root->count; i++) {
-		//val_println(root->cell[i]);
-
 		val_t* x = eval(env, root->cell[i]);
 		val_println(x);
 		val_free(x);
