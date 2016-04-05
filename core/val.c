@@ -21,11 +21,9 @@ void env_free(env_t* env) {
 
 val_t* env_get(env_t* env, val_t* k) {
 	for(unsigned i = 0; i < env->count; i++) {
-		if(!strcmp(env->syms[i], k->sym)) {
+		if(!strcmp(env->syms[i], k->sym))
 			return val_copy(env->vals[i]);
-		}
 	}
-
 
 	printf("Unbound symbol `%s`.\n", k->sym);
 	env->error = 1;
@@ -58,9 +56,7 @@ void env_add_builtin(env_t* env, char* name, vbuiltin func) {
 	val_free(v);
 }
 
-int env_error(env_t* env) {
-	return env->error == 1;
-}
+int env_error(env_t* env) {return env->error == 1;}
 
 val_t* val_num(double num) {
 	val_t* v = malloc(sizeof(val_t));
@@ -144,18 +140,15 @@ void val_print(val_t* v) {
 	if(v == NULL) return;
 
 	switch(v->type) {
-		case VNUM: {
+		case VNUM:
 			printf("%f", v->num);
 			break;
-		}
-		case VSYM: {
+		case VSYM:
 			printf("%s", v->sym);
 			break;
-		}
-		case VFUN: {
+		case VFUN:
 			printf("<function>");
 			break;
-		}
 		case VQEXPR: {
 			putchar('{');
 			for(unsigned i = 0; i < v->count; i++) {
@@ -186,10 +179,9 @@ void val_println(val_t* v) {
 void val_free(val_t* v) {
 	if(v == NULL) return;
 	switch(v->type) {
-		case VSYM: {
+		case VSYM:
 			free(v->sym);
 			break;
-		}
 		case VQEXPR:
 		case VSEXPR: {
 			for(unsigned i = 0; i < v->count; i++) {

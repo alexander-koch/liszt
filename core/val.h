@@ -22,12 +22,14 @@ enum val_type_t {
 
 struct val_t {
 	int type;
-	double num;
-	char* sym;
-	vbuiltin fun;
 
 	unsigned count;
-	struct val_t** cell;
+	union {
+		double num;
+		char* sym;
+		vbuiltin fun;
+		struct val_t** cell;
+	};
 };
 
 struct env_t {
