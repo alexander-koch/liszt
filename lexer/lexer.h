@@ -7,7 +7,6 @@
 // The string value may be NULL.
 
 #include <stddef.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -15,8 +14,7 @@
 #include <adt/bytebuffer.h>
 
 // Location in file / code location
-typedef struct
-{
+typedef struct {
     unsigned int line;
     unsigned int column;
 } location_t;
@@ -24,8 +22,7 @@ typedef struct
 #define location_new(x, y) (location_t) {x, y}
 
 // Lexer structure
-typedef struct lexer_t
-{
+typedef struct lexer_t {
     location_t location;
     const char* name;
     const char* source;
@@ -34,15 +31,12 @@ typedef struct lexer_t
     int error;
 } lexer_t;
 
-typedef enum
-{
+typedef enum {
     TOKEN_NEWLINE,
     TOKEN_SPACE,
     TOKEN_WORD,
     TOKEN_STRING,
-    TOKEN_INT,
-    TOKEN_FLOAT,
-    TOKEN_BOOL,
+    TOKEN_NUM,
     TOKEN_LPAREN,    // '('
     TOKEN_RPAREN,    // ')'
     TOKEN_LBRACE,    // '{'
@@ -74,21 +68,19 @@ typedef enum
     TOKEN_BITNOT,    // '~' OP
     TOKEN_DOUBLECOLON, // '::'
     TOKEN_COLON,     // ':'
-    TOKEN_ARROW,     // '->'
     TOKEN_AT,        // '@'
     TOKEN_QUOTE      // '\''
 } token_type_t;
 
-typedef struct
-{
+typedef struct {
     location_t location;
     token_type_t type;
     char* value;
 } token_t;
 
 const char* tok2str(token_type_t type);
-bool is_operator(token_t* token);
 
+int is_operator(token_t* token);
 token_t* lexer_scan(const char* name, const char* src, size_t* numTokens);
 void lexer_print_tokens(token_t* tokens, size_t n);
 void lexer_free_buffer(token_t* buffer, size_t n);

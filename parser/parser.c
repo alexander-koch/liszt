@@ -66,7 +66,7 @@ val_t* parse_expr(parser_t* parser) {
 	//printf("%d: ", parser->position);
 	if(token == NULL) return NULL;
 
-	if(token->type == TOKEN_INT || token->type == TOKEN_FLOAT) {
+	if(token->type == TOKEN_NUM) {
 		// printf("Number found\n");
 		return parse_number(parser);
 	}

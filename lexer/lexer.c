@@ -6,9 +6,7 @@ const char* tok2str(token_type_t type) {
         case TOKEN_SPACE: return "<space>";
         case TOKEN_WORD: return "<word>";
         case TOKEN_STRING: return "<string>";
-        case TOKEN_INT: return "<int>";
-        case TOKEN_FLOAT: return "<float>";
-        case TOKEN_BOOL: return "<bool>";
+        case TOKEN_NUM: return "<num>";
         case TOKEN_LPAREN: return "<lparen>";
         case TOKEN_RPAREN: return "<rparen>";
         case TOKEN_LBRACE: return "<lbrace>";
@@ -40,21 +38,18 @@ const char* tok2str(token_type_t type) {
         case TOKEN_BITNOT: return "<bitnot>";
         case TOKEN_DOUBLECOLON: return "<double_colon>";
         case TOKEN_COLON: return "<colon>";
-        case TOKEN_ARROW: return "<arrow>";
         case TOKEN_QUOTE: return "<quote>";
         default: return "<null>";
     }
 }
 
-bool is_operator(token_t* token) {
+int is_operator(token_t* token) {
     switch(token->type) {
         case TOKEN_NEWLINE:
         case TOKEN_SPACE:
         case TOKEN_WORD:
         case TOKEN_STRING:
-        case TOKEN_INT:
-        case TOKEN_FLOAT:
-        case TOKEN_BOOL:
+        case TOKEN_NUM:
         case TOKEN_LPAREN:
         case TOKEN_RPAREN:
         case TOKEN_LBRACE:
@@ -62,8 +57,8 @@ bool is_operator(token_t* token) {
         case TOKEN_LBRACKET:
         case TOKEN_RBRACKET:
         case TOKEN_QUOTE:
-        case TOKEN_COMMA: return false;
-        default: return true;
+        case TOKEN_COMMA: return 0;
+        default: return 1;
     }
 }
 
@@ -198,7 +193,6 @@ int lex_op(lexer_t* lexer, token_t* token) {
         RESERVED_ENTRY("}", TOKEN_RBRACE),
         RESERVED_ENTRY(",", TOKEN_COMMA),
         RESERVED_ENTRY("+", TOKEN_ADD),
-        RESERVED_ENTRY("->", TOKEN_ARROW),
         RESERVED_ENTRY("-", TOKEN_SUB),
         RESERVED_ENTRY("*", TOKEN_MUL),
         RESERVED_ENTRY("/", TOKEN_DIV),
@@ -238,18 +232,16 @@ int lex_op(lexer_t* lexer, token_t* token) {
 }
 
 int lex_num(lexer_t* lexer, token_t* token) {
-    int is_float = 0;
     const char* end = lexer->cursor;
     while(isdigit(end[0])) end++;
 
     if(end[0] == '.' && isdigit(end[1])) {
-        is_float = 1;
         end++;
 
         while(isdigit(end[0])) end++;
     }
 
-    token->type = is_float ? TOKEN_FLOAT : TOKEN_INT;
+    token->type = TOKEN_NUM;
     token->value = strndup(lexer->cursor, end - lexer->cursor);
     lexer->cursor = end;
     return 1;
@@ -262,11 +254,6 @@ int lex_word(lexer_t* lexer, token_t* token) {
     token->type = TOKEN_WORD;
     token->value = strndup(lexer->cursor, end - lexer->cursor);
     lexer->cursor = end;
-
-    if(!strcmp(token->value, "true") || !strcmp(token->value, "false")) {
-        token->type = TOKEN_BOOL;
-    }
-
     return 1;
 }
 
