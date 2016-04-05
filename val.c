@@ -5,6 +5,7 @@ env_t* env_new() {
 	env->count = 0;
 	env->syms = NULL;
 	env->vals = NULL;
+	env->error = 0;
 	return env;
 }
 
@@ -25,7 +26,9 @@ val_t* env_get(env_t* env, val_t* k) {
 		}
 	}
 
-	printf("Unbound symbol `%s`!\n", k->sym);
+
+	printf("Unbound symbol `%s`.\n", k->sym);
+	env->error = 1;
 	return NULL;
 }
 
@@ -53,6 +56,10 @@ void env_add_builtin(env_t* env, char* name, vbuiltin func) {
 	env_put(env, k, v);
 	val_free(k);
 	val_free(v);
+}
+
+int env_error(env_t* env) {
+	return env->error == 1;
 }
 
 val_t* val_num(double num) {

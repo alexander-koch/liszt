@@ -31,6 +31,7 @@ struct val_t {
 };
 
 struct env_t {
+	int error;
 	unsigned count;
 	char** syms;
 	val_t** vals;
@@ -41,6 +42,7 @@ void env_free(env_t* env);
 val_t* env_get(env_t* env, val_t* v);
 void env_put(env_t* env, val_t* k, val_t* v);
 void env_add_builtin(env_t* env, char* name, vbuiltin func);
+int env_error(env_t* env);
 
 val_t* val_num(double num);
 val_t* val_sym(char* sym);
