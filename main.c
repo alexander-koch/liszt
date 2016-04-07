@@ -258,6 +258,27 @@ void eval_root(env_t* env, val_t* root) {
 	}
 }
 
+void run_file(env_t* env, char* file);
+val_t* builtin_import(env_t* env, val_t* v) {
+	if(v->count != 1) {
+		ERR(v, "One argument expected\n");
+		return NULL;
+	}
+
+	if(v->cell[0]->type != VQEXPR ||
+		v->cell[0]->count != 1) {
+		ERR(v, "One Q-Expression expected\n");
+		return NULL;
+	}
+
+	char* name = v->cell[0]->cell[0]->sym;
+	char* module = concat(name, ".lisp");
+	val_free(v);
+	run_file(env, module);
+	free(module);
+	return val_sexpr();
+}
+
 void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "list", builtin_list);
 	env_add_builtin(env, "head", builtin_head);
@@ -266,6 +287,7 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "var", builtin_var);
 	env_add_builtin(env, "def", builtin_def);
 	env_add_builtin(env, "lambda", builtin_lambda);
+	env_add_builtin(env, "import", builtin_import);
 
 	env_add_builtin(env, "+", builtin_add);
 	env_add_builtin(env, "-", builtin_sub);
