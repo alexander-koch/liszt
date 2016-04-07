@@ -2,6 +2,7 @@
 
 env_t* env_new() {
 	env_t* env = malloc(sizeof(env_t));
+	env->par = NULL;
 	env->count = 0;
 	env->syms = NULL;
 	env->vals = NULL;
@@ -23,6 +24,10 @@ val_t* env_get(env_t* env, val_t* k) {
 	for(unsigned i = 0; i < env->count; i++) {
 		if(!strcmp(env->syms[i], k->sym))
 			return val_copy(env->vals[i]);
+	}
+
+	if(env->par) {
+		return env_get(env->par, k);
 	}
 
 	printf("Unbound symbol `%s`.\n", k->sym);
@@ -58,6 +63,20 @@ void env_add_builtin(env_t* env, char* name, vbuiltin func) {
 
 int env_error(env_t* env) {return env->error == 1;}
 
+env_t* env_copy(env_t* env) {
+	env_t* n = malloc(sizeof(env_t));
+	n->par = env->par;
+	n->count = env->count;
+	n->syms = malloc(sizeof(char*) * n->count);
+	n->vals = malloc(sizeof(val_t*) * n->count);
+	for(int i = 0; i < env->count; i++) {
+		n->syms[i] = malloc(strlen(env->syms[i]) + 1);
+    	strcpy(n->syms[i], env->syms[i]);
+    	n->vals[i] = val_copy(env->vals[i]);
+	}
+	return n;
+}
+
 val_t* val_num(double num) {
 	val_t* v = malloc(sizeof(val_t));
 	v->type = VNUM;
@@ -76,7 +95,7 @@ val_t* val_sym(char* sym) {
 val_t* val_fun(vbuiltin func) {
 	val_t* v = malloc(sizeof(val_t));
 	v->type = VFUN;
-	v->fun = func;
+	v->builtin = func;
 	return v;
 }
 
@@ -85,6 +104,16 @@ val_t* val_sexpr() {
 	v->type = VSEXPR;
 	v->count = 0;
 	v->cell = NULL;
+	return v;
+}
+
+val_t* val_lambda(val_t* formals, val_t* body) {
+	val_t* v = malloc(sizeof(val_t));
+	v->type = VFUN;
+	v->builtin = NULL;
+	v->env = env_new();
+	v->formals = formals;
+	v->body = body;
 	return v;
 }
 
@@ -114,7 +143,17 @@ val_t* val_copy(val_t* v) {
 	x->type = v->type;
 
 	switch(v->type) {
-		case VFUN: x->fun = v->fun; break;
+		case VFUN: {
+			if(v->builtin) {
+				x->builtin = v->builtin;
+			} else {
+				x->builtin = NULL;
+				x->env = env_copy(v->env);
+				x->formals = val_copy(v->formals);
+				x->body = val_copy(v->body);
+			}
+			break;
+		}
 		case VNUM: x->num = v->num; break;
 		case VSYM: {
 			x->sym = malloc(strlen(v->sym)+1);
@@ -147,7 +186,15 @@ void val_print(val_t* v) {
 			printf("%s", v->sym);
 			break;
 		case VFUN:
-			printf("<function>");
+			if(v->builtin) {
+				printf("<builtin>");
+			} else {
+				printf("(lambda ");
+				val_print(v->formals);
+				putchar(' ');
+				val_print(v->body);
+				putchar(')');
+			}
 			break;
 		case VQEXPR: {
 			putchar('{');
@@ -182,6 +229,14 @@ void val_free(val_t* v) {
 		case VSYM:
 			free(v->sym);
 			break;
+		case VFUN: {
+			if(!v->builtin) {
+				env_free(v->env);
+				val_free(v->formals);
+				val_free(v->body);
+			}
+			break;
+		}
 		case VQEXPR:
 		case VSEXPR: {
 			for(unsigned i = 0; i < v->count; i++) {

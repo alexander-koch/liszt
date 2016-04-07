@@ -103,6 +103,21 @@ val_t* builtin_tail(env_t* env, val_t* v) {
 	return x;
 }
 
+val_t* builtin_eval(env_t* env, val_t* v) {
+	if(v->count != 1) {
+		ERR(v, "Too many arguments\n");
+		return NULL;
+	}
+
+	if(v->cell[0]->type != VQEXPR) {
+		ERR(v, "Eval expects a Q-Expression\n");
+		return NULL;
+	}
+
+	val_t* x = val_take(v, 0);
+	x->type = VSEXPR;
+	return eval(env, x);
+}
 
 val_t* builtin_def(env_t* env, val_t* v) {
 	if(v->cell[0]->type != VQEXPR) {
@@ -131,6 +146,59 @@ val_t* builtin_def(env_t* env, val_t* v) {
 	return val_sexpr();
 }
 
+val_t* builtin_lambda(env_t* env, val_t* v) {
+	if(v->count != 2) {
+		ERR(v, "Expected two arguments in lambda\n");
+		return NULL;
+	}
+
+	if(v->cell[0]->type != VQEXPR ||
+		v->cell[1]->type != VQEXPR) {
+		ERR(v, "Expected Q-Expressions as parameters (lambda)\n");
+		return NULL;
+	}
+
+	for(int i = 0; i < v->cell[0]->count; i++) {
+		if(v->cell[0]->cell[i]->type != VSYM) {
+			ERR(v, "Cannot define non symbol\n");
+			return NULL;
+		}
+	}
+
+	val_t* formals = val_pop(v, 0);
+	val_t* body = val_pop(v, 0);
+	val_free(v);
+	return val_lambda(formals, body);
+}
+
+val_t* val_call(env_t* env, val_t* f, val_t* v) {
+	if(f->builtin) { return f->builtin(env, v); }
+
+	int given = v->count;
+	int total = f->formals->count;
+	while(v->count) {
+		if(f->formals->count == 0) {
+			val_free(v);
+			printf("Function passed too many arguments: (got: %d, expected: %d)\n", given, total);
+			return 0;
+		}
+
+		val_t* sym = val_pop(f->formals, 0);
+		val_t* val = val_pop(v, 0);
+		env_put(env, sym, val);
+		val_free(sym);
+		val_free(val);
+	}
+
+	val_free(v);
+
+	if(f->formals->count == 0) {
+		f->env->par = env;
+		return builtin_eval(f->env, val_add(val_sexpr(), val_copy(f->body)));
+	}
+	return val_copy(f);
+}
+
 val_t* eval_sexpr(env_t* env, val_t* v) {
 	if(v == NULL) return NULL;
 
@@ -150,7 +218,7 @@ val_t* eval_sexpr(env_t* env, val_t* v) {
 		return NULL;
 	}
 
-	val_t* result = f->fun(env, v);
+	val_t* result = val_call(env, f, v);
 	val_free(f);
 	return result;
 }
@@ -182,7 +250,9 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "list", builtin_list);
 	env_add_builtin(env, "head", builtin_head);
 	env_add_builtin(env, "tail", builtin_tail);
+	env_add_builtin(env, "eval", builtin_eval);
 	env_add_builtin(env, "def", builtin_def);
+	env_add_builtin(env, "lambda", builtin_lambda);
 
 	env_add_builtin(env, "+", builtin_add);
 	env_add_builtin(env, "-", builtin_sub);

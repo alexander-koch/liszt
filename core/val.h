@@ -23,17 +23,25 @@ enum val_type_t {
 struct val_t {
 	int type;
 
-	unsigned count;
 	union {
 		double num;
 		char* sym;
-		vbuiltin fun;
+		vbuiltin builtin;
 		struct val_t** cell;
 	};
+
+	// S/Q-Expression cell size
+	unsigned count;
+
+	// Function related
+	env_t* env;
+	val_t* formals;
+	val_t* body;
 };
 
 struct env_t {
 	int error;
+	env_t* par;
 	unsigned count;
 	char** syms;
 	val_t** vals;
@@ -45,11 +53,13 @@ val_t* env_get(env_t* env, val_t* v);
 void env_put(env_t* env, val_t* k, val_t* v);
 void env_add_builtin(env_t* env, char* name, vbuiltin func);
 int env_error(env_t* env);
+env_t* env_copy(env_t* env);
 
 val_t* val_num(double num);
 val_t* val_sym(char* sym);
 val_t* val_fun(vbuiltin func);
 val_t* val_sexpr();
+val_t* val_lambda(val_t* formals, val_t* body);
 
 val_t* val_add(val_t* v, val_t* x);
 val_t* val_pop(val_t* v, int i);
