@@ -1,6 +1,7 @@
 ; Standard library
 
 ; Constants
+(def 'nil '())
 (def 'true 1)
 (def 'false 0)
 (def 'pi 3.1415926)
