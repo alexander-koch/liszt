@@ -119,7 +119,7 @@ val_t* builtin_eval(env_t* env, val_t* v) {
 	return eval(env, x);
 }
 
-val_t* builtin_def(env_t* env, val_t* v) {
+val_t* builtin_vardecl(env_t* env, val_t* v, int global) {
 	if(v->cell[0]->type != VQEXPR) {
 		ERR(v, "Incorrect type for function 'def'\n");
 		return NULL;
@@ -139,11 +139,23 @@ val_t* builtin_def(env_t* env, val_t* v) {
 	}
 
 	for(unsigned i = 0; i < syms->count; i++) {
-		env_put(env, syms->cell[i], v->cell[i+1]);
+		if(global) {
+			env_put_global(env, syms->cell[i], v->cell[i+1]);
+		} else {
+			env_put(env, syms->cell[i], v->cell[i+1]);
+		}
 	}
 
 	val_free(v);
 	return val_sexpr();
+}
+
+val_t* builtin_def(env_t* env, val_t* v) {
+	return builtin_vardecl(env, v, 1);
+}
+
+val_t* builtin_var(env_t* env, val_t* v) {
+	return builtin_vardecl(env, v, 0);
 }
 
 val_t* builtin_lambda(env_t* env, val_t* v) {
@@ -251,6 +263,7 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "head", builtin_head);
 	env_add_builtin(env, "tail", builtin_tail);
 	env_add_builtin(env, "eval", builtin_eval);
+	env_add_builtin(env, "var", builtin_var);
 	env_add_builtin(env, "def", builtin_def);
 	env_add_builtin(env, "lambda", builtin_lambda);
 

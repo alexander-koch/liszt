@@ -53,6 +53,11 @@ void env_put(env_t* env, val_t* k, val_t* v) {
 	strcpy(env->syms[env->count-1], k->sym);
 }
 
+void env_put_global(env_t* env, val_t* k, val_t* v) {
+	while(env->par) { env = env->par; }
+	env_put(env, k, v);
+}
+
 void env_add_builtin(env_t* env, char* name, vbuiltin func) {
 	val_t* k = val_sym(name);
 	val_t* v = val_fun(func);

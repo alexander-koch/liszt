@@ -51,6 +51,7 @@ env_t* env_new();
 void env_free(env_t* env);
 val_t* env_get(env_t* env, val_t* v);
 void env_put(env_t* env, val_t* k, val_t* v);
+void env_put_global(env_t* env, val_t* k, val_t* v);
 void env_add_builtin(env_t* env, char* name, vbuiltin func);
 int env_error(env_t* env);
 env_t* env_copy(env_t* env);
