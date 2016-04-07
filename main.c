@@ -1,4 +1,3 @@
-// Slothlisp - the lisp that keeps it easy and slow
 // Copyright (c) Alexander Koch 2016
 
 #include <stdio.h>
@@ -208,7 +207,7 @@ void run(env_t* env, const char* name, char* input) {
 
 static char buffer[2048];
 void repl(env_t* env) {
-	puts("Slothlisp version 0.1a");
+	puts("Version 0.1a-dev");
 	puts("Type 'exit' to exit\n");
 	while(1) {
 		fputs("lisp> ", stdout);

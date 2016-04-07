@@ -7,4 +7,4 @@ FILES = core/util.c \
 		parser/parser.c
 
 all:
-	$(CC) $(CFLAGS) -g -o sloth main.c $(FILES)
+	$(CC) $(CFLAGS) -g -o lisp main.c $(FILES)
