@@ -81,9 +81,8 @@ val_t* parse_expr(parser_t* parser) {
 		return expr;
 	}
 
-	if(token->type == TOKEN_LPAREN) {
+	if(token->type == TOKEN_LPAREN)
 		return parse_sexpr(parser);
-	}
 	if(token->type == TOKEN_RPAREN)
 		return NULL;
 

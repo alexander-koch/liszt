@@ -312,10 +312,10 @@ void run(env_t* env, const char* name, char* input) {
 
 static char buffer[2048];
 void repl(env_t* env) {
-	puts("Version 0.1a-dev");
+	puts("Liszt v0.1-dev");
 	puts("Type 'exit' to exit\n");
 	while(1) {
-		fputs("lisp> ", stdout);
+		fputs("liszt> ", stdout);
 		fgets(buffer, 2048, stdin);
 		if(!strncmp(buffer, "exit", 4)) break;
 		run(env, "<stdin>", buffer);
