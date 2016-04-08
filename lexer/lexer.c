@@ -20,7 +20,6 @@ const char* tok2str(token_type_t type) {
         case TOKEN_DIV: return "<div>";
         case TOKEN_MOD: return "<mod>";
         case TOKEN_EQUAL: return "<equal>";
-        case TOKEN_ASSIGN: return "<assign>";
         case TOKEN_NEQUAL: return "<nequal>";
         case TOKEN_NOT: return "<not>";
         case TOKEN_DOT: return "<dot>";
@@ -39,6 +38,7 @@ const char* tok2str(token_type_t type) {
         case TOKEN_DOUBLECOLON: return "<double_colon>";
         case TOKEN_COLON: return "<colon>";
         case TOKEN_QUOTE: return "<quote>";
+        case TOKEN_SIGIL: return "<sigil>";
         default: return "<null>";
     }
 }
@@ -114,7 +114,7 @@ void lex_skip_space(lexer_t* lexer) {
         }
     }
 
-    while(isspace(lexer->cursor[0]) && lexer->cursor[0] != '\n' && lexer->cursor[0] != '\r' && lexer->cursor[0] != '#') {
+    while(isspace(lexer->cursor[0]) && lexer->cursor[0] != '\n' && lexer->cursor[0] != '\r' && lexer->cursor[0] != ';') {
         lexer->cursor++;
     }
 }
@@ -198,7 +198,6 @@ int lex_op(lexer_t* lexer, token_t* token) {
         RESERVED_ENTRY("/", TOKEN_DIV),
         RESERVED_ENTRY("%", TOKEN_MOD),
         RESERVED_ENTRY("=", TOKEN_EQUAL),
-        RESERVED_ENTRY(":=", TOKEN_ASSIGN),
         RESERVED_ENTRY("!=", TOKEN_NEQUAL),
         RESERVED_ENTRY("!", TOKEN_NOT),
         RESERVED_ENTRY(".", TOKEN_DOT),
@@ -217,7 +216,8 @@ int lex_op(lexer_t* lexer, token_t* token) {
         RESERVED_ENTRY("::", TOKEN_DOUBLECOLON),
         RESERVED_ENTRY(":", TOKEN_COLON),
         RESERVED_ENTRY("@", TOKEN_AT),
-        RESERVED_ENTRY("\'", TOKEN_QUOTE)
+        RESERVED_ENTRY("\'", TOKEN_QUOTE),
+        RESERVED_ENTRY("$", TOKEN_SIGIL)
     };
 
     for(size_t i = 0; i < sizeof(ops)/sizeof(ops[0]); i++) {

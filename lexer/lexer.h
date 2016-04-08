@@ -50,7 +50,6 @@ typedef enum {
     TOKEN_DIV,       // '/' OP
     TOKEN_MOD,       // '%' OP
     TOKEN_EQUAL,     // '=' OP
-    TOKEN_ASSIGN,    // ':=' OP
     TOKEN_NEQUAL,    // '!=' OP
     TOKEN_NOT,       // '!' OP
     TOKEN_DOT,       // '.'
@@ -69,7 +68,8 @@ typedef enum {
     TOKEN_DOUBLECOLON, // '::'
     TOKEN_COLON,     // ':'
     TOKEN_AT,        // '@'
-    TOKEN_QUOTE      // '\''
+    TOKEN_QUOTE,     // '\''
+    TOKEN_SIGIL      // '$'
 } token_type_t;
 
 typedef struct {

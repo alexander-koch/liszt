@@ -2,8 +2,7 @@
 
 //static char* rootDirectory = 0;
 
-char* strdup(const char* str)
-{
+char* strdup(const char* str) {
     size_t len = strlen(str) + 1;
 	char *copy = malloc(len);
 	if(!copy) return 0;
@@ -11,21 +10,18 @@ char* strdup(const char* str)
 	return copy;
 }
 
-char* strndup(const char* str, size_t n)
-{
+char* strndup(const char* str, size_t n) {
     const char* t = str;
     char* r = malloc(n + 1);
     char* p = r;
-    while(*t && t < str + n)
-    {
+    while(*t && t < str + n) {
         *p++ = *t++;
     }
     *p = 0;
     return r;
 }
 
-char* concat(char* s1, char* s2)
-{
+char* concat(char* s1, char* s2) {
     char *result = malloc(strlen(s1) + strlen(s2) + 1);
     if(!result) return 0;
     strcpy(result, s1);
@@ -33,15 +29,12 @@ char* concat(char* s1, char* s2)
     return result;
 }
 
-char* strf(const char* format, ...)
-{
+char* strf(const char* format, ...) {
     va_list argList;
     va_start(argList, format);
     size_t totalLength = 0;
-    for (const char* c = format; *c != '\0'; c++)
-    {
-        switch (*c)
-        {
+    for(const char* c = format; *c != '\0'; c++) {
+        switch (*c) {
             case '$':
             totalLength += strlen(va_arg(argList, const char*));
             break;
@@ -54,12 +47,9 @@ char* strf(const char* format, ...)
     char* buffer = malloc(sizeof(char)*totalLength);
     va_start(argList, format);
     char* start = buffer;
-    for(const char* c = format; *c != '\0'; c++)
-    {
-        switch (*c)
-        {
-            case '$':
-            {
+    for(const char* c = format; *c != '\0'; c++) {
+        switch (*c) {
+            case '$': {
                 const char* string = va_arg(argList, const char*);
                 size_t length = strlen(string);
                 memcpy(start, string, length);
@@ -75,19 +65,16 @@ char* strf(const char* format, ...)
     return buffer;
 }
 
-unsigned long djb2(unsigned char *str)
-{
+unsigned long djb2(unsigned char *str) {
     unsigned long hash = 5381;
     int c;
-    while ((c = *str++))
-    {
+    while((c = *str++)) {
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
     }
     return hash;
 }
 
-char* readFile(const char* path)
-{
+char* readFile(const char* path) {
     FILE* file = fopen(path, "rb");
     if(!file) return 0;
 
@@ -126,8 +113,7 @@ char* getDirectory(const char* path) {
     return root;
 }
 
-char* replaceExt(char* filename, const char* ext, size_t len)
-{
+char* replaceExt(char* filename, const char* ext, size_t len) {
     char* x = strrchr(filename, '.');
     size_t idx = x - filename;
     char* mem = malloc(sizeof(char) * (idx+len+1));
@@ -137,19 +123,6 @@ char* replaceExt(char* filename, const char* ext, size_t len)
     idx += len+1;
     mem[idx] = '\0';
     return mem;
-}
-
-void memset64(void* dest, uint64_t value, uintptr_t size)
-{
-    uintptr_t i;
-    for(i = 0; i < (size & (~7)); i+=8)
-    {
-        memcpy(((char*)dest) + i, &value, 8);
-    }
-    for(; i < size; i++)
-    {
-        ((char*)dest)[i] = ((char*)&value)[i&7];
-    }
 }
 
 // Mersenne-Twister
@@ -163,13 +136,11 @@ static const uint32_t A[2] = { 0, 0x9908b0df };
 static uint32_t y[N];
 static int index = N+1;
 
-void seed_prng(const uint32_t seed_value)
-{
+void seed_prng(const uint32_t seed_value) {
     seed = seed_value;
 }
 
-uint32_t mt()
-{
+uint32_t mt() {
     uint32_t e;
     if(index > N) {
         int i;
@@ -206,8 +177,7 @@ uint32_t mt()
     return e;
 }
 
-double prng()
-{
+double prng() {
     uint32_t rnd = mt();
     double res = rnd / (double)UINT32_MAX;
     return res;

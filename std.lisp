@@ -4,7 +4,6 @@
 (def 'nil '())
 (def 'true 1)
 (def 'false 0)
-(def 'pi 3.1415926)
 
 ; Function definition formals and body as parameters
 (def 'fun (lambda '(f b) '(def (head f) (lambda (tail f) b))))
