@@ -32,6 +32,7 @@ typedef struct lexer_t {
 } lexer_t;
 
 typedef enum {
+    TOKEN_EOF,
     TOKEN_NEWLINE,
     TOKEN_SPACE,
     TOKEN_WORD,

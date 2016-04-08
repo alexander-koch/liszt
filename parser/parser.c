@@ -6,6 +6,12 @@ typedef struct {
 	size_t numTokens;
 } parser_t;
 
+token_t eof_tok = {
+	.location = location_new(0, 0),
+	.type = TOKEN_EOF,
+	.value = NULL
+};
+
 // Helper functions
 token_t* parser_peek(parser_t* parser, int offset) {
 	if(offset < 0) {
@@ -14,10 +20,16 @@ token_t* parser_peek(parser_t* parser, int offset) {
 	}
 
 	if(parser->position+offset >= parser->numTokens) {
-		return NULL;
+		return &eof_tok;
 	}
 
 	return &parser->tokens[parser->position + offset];
+}
+
+void skip_newlines(parser_t* parser) {
+	while(parser_peek(parser, 0)->type == TOKEN_NEWLINE) {
+		parser->position++;
+	}
 }
 
 // Parsing functions
@@ -59,7 +71,8 @@ val_t* parse_symbol(parser_t* parser) {
 // parse main expression
 val_t* parse_expr(parser_t* parser) {
 	token_t* token = parser_peek(parser, 0);
-	if(token == NULL) return NULL;
+	if(token->type == TOKEN_EOF) return NULL;
+	skip_newlines(parser);
 
 	if(token->type == TOKEN_NUM)
 		return parse_number(parser);
