@@ -1,8 +1,8 @@
 ; Math standard library
 
 ; Constants
-(def #pi 3.1415926)
-(def #e 2.7182818)
+(var #pi 3.1415926)
+(var #e 2.7182818)
 
 ; Functions
 (fun #(square x) #(* x x))

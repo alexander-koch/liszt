@@ -150,11 +150,11 @@ val_t* builtin_vardecl(env_t* env, val_t* v, int global) {
 	return val_sexpr();
 }
 
-val_t* builtin_def(env_t* env, val_t* v) {
+val_t* builtin_var(env_t* env, val_t* v) {
 	return builtin_vardecl(env, v, 1);
 }
 
-val_t* builtin_var(env_t* env, val_t* v) {
+val_t* builtin_local(env_t* env, val_t* v) {
 	return builtin_vardecl(env, v, 0);
 }
 
@@ -284,8 +284,8 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "head", builtin_head);
 	env_add_builtin(env, "tail", builtin_tail);
 	env_add_builtin(env, "eval", builtin_eval);
+	env_add_builtin(env, "local", builtin_local);
 	env_add_builtin(env, "var", builtin_var);
-	env_add_builtin(env, "def", builtin_def);
 	env_add_builtin(env, "lambda", builtin_lambda);
 	env_add_builtin(env, "import", builtin_import);
 
