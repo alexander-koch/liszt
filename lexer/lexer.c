@@ -75,7 +75,12 @@ typedef struct {
     token_type_t type;
 } Reserved;
 
-int is_special(char c) {
+int is_special(char c, int inc_paren) {
+    if(inc_paren) {
+        if(c == '(' || c == ')')
+            return 1;
+    }
+
     switch(c) {
         case '@':
         case '+':
@@ -96,8 +101,6 @@ int is_special(char c) {
         case '^':
         case '~':
         case '$':
-        case '(':
-        case ')':
         case '[':
         case ']':
         case '\'':
@@ -114,7 +117,8 @@ void lex_skip_space(lexer_t* lexer) {
         }
     }
 
-    while(isspace(lexer->cursor[0]) && lexer->cursor[0] != '\n' && lexer->cursor[0] != '\r' && lexer->cursor[0] != ';') {
+    while(isspace(lexer->cursor[0]) && lexer->cursor[0] != '\n' &&
+        lexer->cursor[0] != '\r' && lexer->cursor[0] != ';') {
         lexer->cursor++;
     }
 }
@@ -124,7 +128,7 @@ int is_word_start(char c) {
 }
 
 int is_word(char c) {
-    return isalnum(c) || c == '_';
+    return isalnum(c) || is_special(c, 0) || c == '_';
 }
 
 int is_newline(lexer_t* lexer) {
@@ -136,7 +140,7 @@ int is_space(lexer_t* lexer) {
 }
 
 int is_punct(lexer_t* lexer) {
-    return is_special(lexer->cursor[0]);
+    return is_special(lexer->cursor[0], 1);
 }
 
 int is_number(lexer_t* lexer) {
