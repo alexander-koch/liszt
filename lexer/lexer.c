@@ -39,6 +39,7 @@ const char* tok2str(token_type_t type) {
         case TOKEN_COLON: return "<colon>";
         case TOKEN_QUOTE: return "<quote>";
         case TOKEN_SIGIL: return "<sigil>";
+        case TOKEN_NUMBERSIGN: return "<number_sign>";
         default: return "<null>";
     }
 }
@@ -56,6 +57,8 @@ int is_operator(token_t* token) {
         case TOKEN_RBRACE:
         case TOKEN_LBRACKET:
         case TOKEN_RBRACKET:
+        case TOKEN_NUMBERSIGN:
+        case TOKEN_SIGIL:
         case TOKEN_QUOTE:
         case TOKEN_COMMA: return 0;
         default: return 1;
@@ -82,6 +85,7 @@ int is_special(char c, int inc_paren) {
     }
 
     switch(c) {
+        case '#':
         case '@':
         case '+':
         case '-':
@@ -221,7 +225,8 @@ int lex_op(lexer_t* lexer, token_t* token) {
         RESERVED_ENTRY(":", TOKEN_COLON),
         RESERVED_ENTRY("@", TOKEN_AT),
         RESERVED_ENTRY("\'", TOKEN_QUOTE),
-        RESERVED_ENTRY("$", TOKEN_SIGIL)
+        RESERVED_ENTRY("$", TOKEN_SIGIL),
+        RESERVED_ENTRY("#", TOKEN_NUMBERSIGN)
     };
 
     for(size_t i = 0; i < sizeof(ops)/sizeof(ops[0]); i++) {
@@ -402,7 +407,7 @@ token_t* lexer_scan(const char* name, const char* src, size_t* numTokens) {
 void lexer_print_tokens(token_t* tokens, size_t n) {
     for(size_t i = 0; i < n; i++) {
         token_t* token = &tokens[i];
-        printf("[TOK: %s], ", token->value);
+        printf("[TOK: %s], ", tok2str(token->type));
     }
     printf("\n");
 }

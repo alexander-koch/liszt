@@ -300,7 +300,7 @@ void run(env_t* env, const char* name, char* input) {
 	size_t numTokens;
 	token_t* tokens = lexer_scan("<stdin>", input, &numTokens);
 	if(tokens) {
-		//lexer_print_tokens(tokens, numTokens);
+		// lexer_print_tokens(tokens, numTokens);
 		val_t* root = parse_buffer(tokens, numTokens);
 		eval_root(env, root);
 

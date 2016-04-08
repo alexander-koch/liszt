@@ -66,7 +66,7 @@ val_t* parse_expr(parser_t* parser) {
 	if(token->type == TOKEN_WORD || is_operator(token))
 		return parse_symbol(parser);
 
-	if(token->type == TOKEN_QUOTE) {
+	if(token->type == TOKEN_NUMBERSIGN) {
 		parser->position++;
 		val_t* expr = parse_expr(parser);
 		if(expr->type == VSEXPR) {

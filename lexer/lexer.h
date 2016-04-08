@@ -69,7 +69,8 @@ typedef enum {
     TOKEN_COLON,     // ':'
     TOKEN_AT,        // '@'
     TOKEN_QUOTE,     // '\''
-    TOKEN_SIGIL      // '$'
+    TOKEN_SIGIL,     // '$'
+    TOKEN_NUMBERSIGN // '#'
 } token_type_t;
 
 typedef struct {
