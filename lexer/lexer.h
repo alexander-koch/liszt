@@ -73,7 +73,6 @@ typedef enum {
     TOKEN_BITOR,     // '|'
     TOKEN_BITXOR,    // '^'
     TOKEN_BITNOT,    // '~'
-    TOKEN_DOUBLECOLON, // '::'
     TOKEN_COLON,     // ':'
     TOKEN_AT,        // '@'
     TOKEN_QUOTE,     // '\''

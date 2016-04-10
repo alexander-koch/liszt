@@ -83,21 +83,29 @@ val_t* builtin_cmp(env_t* env, val_t* v, token_type_t op, int num) {
 	return val_num(r);
 }
 
-val_t* builtin_add(env_t* env, val_t* v) {return builtin_op(env, v, TOKEN_ADD);}
-val_t* builtin_sub(env_t* env, val_t* v) {return builtin_op(env, v, TOKEN_SUB);}
-val_t* builtin_mul(env_t* env, val_t* v) {return builtin_op(env, v, TOKEN_MUL);}
-val_t* builtin_div(env_t* env, val_t* v) {return builtin_op(env, v, TOKEN_DIV);}
-val_t* builtin_gt(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_GT, 1);}
-val_t* builtin_lt(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_LT, 1);}
-val_t* builtin_ge(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_GE, 1);}
-val_t* builtin_le(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_LE, 1);}
-val_t* builtin_eq(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_EQUAL, 0);}
-val_t* builtin_ne(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_NEQUAL, 0);}
+// Builtin number operators
+val_t* builtin_add(env_t* env, val_t* v)
+	{return builtin_op(env, v, TOKEN_ADD);}
+val_t* builtin_sub(env_t* env, val_t* v)
+	{return builtin_op(env, v, TOKEN_SUB);}
+val_t* builtin_mul(env_t* env, val_t* v)
+	{return builtin_op(env, v, TOKEN_MUL);}
+val_t* builtin_div(env_t* env, val_t* v)
+	{return builtin_op(env, v, TOKEN_DIV);}
+val_t* builtin_gt(env_t* env, val_t* v)
+	{return builtin_cmp(env, v, TOKEN_GT, 1);}
+val_t* builtin_lt(env_t* env, val_t* v)
+	{return builtin_cmp(env, v, TOKEN_LT, 1);}
+val_t* builtin_ge(env_t* env, val_t* v)
+	{return builtin_cmp(env, v, TOKEN_GE, 1);}
+val_t* builtin_le(env_t* env, val_t* v)
+	{return builtin_cmp(env, v, TOKEN_LE, 1);}
+val_t* builtin_eq(env_t* env, val_t* v)
+	{return builtin_cmp(env, v, TOKEN_EQUAL, 0);}
+val_t* builtin_ne(env_t* env, val_t* v)
+	{return builtin_cmp(env, v, TOKEN_NEQUAL, 0);}
 
-val_t* builtin_list(env_t* env, val_t* v) {
-	v->type = VQEXPR;
-	return v;
-}
+val_t* builtin_list(env_t* env, val_t* v) {v->type = VQEXPR; return v;}
 
 val_t* builtin_head(env_t* env, val_t* v) {
 	if(v->count != 1) {
@@ -251,7 +259,6 @@ val_t* eval_sexpr(env_t* env, val_t* v) {
 	}
 
 	if(env_error(env)) return NULL;
-
 	if(v->count == 0) return v;
 	if(v->count == 1) return val_take(v, 0);
 

@@ -37,7 +37,6 @@ const char* tok2str(token_type_t type) {
         case TOKEN_BITOR: return "<bitor>";
         case TOKEN_BITXOR: return "<bitxor>";
         case TOKEN_BITNOT: return "<bitnot>";
-        case TOKEN_DOUBLECOLON: return "<double_colon>";
         case TOKEN_COLON: return "<colon>";
         case TOKEN_QUOTE: return "<quote>";
         case TOKEN_SIGIL: return "<sigil>";
@@ -224,7 +223,6 @@ int lex_op(lexer_t* lexer, token_t* token) {
         RESERVED_ENTRY("|", TOKEN_BITOR),
         RESERVED_ENTRY("^", TOKEN_BITXOR),
         RESERVED_ENTRY("~", TOKEN_BITNOT),
-        RESERVED_ENTRY("::", TOKEN_DOUBLECOLON),
         RESERVED_ENTRY(":", TOKEN_COLON),
         RESERVED_ENTRY("@", TOKEN_AT),
         RESERVED_ENTRY("\'", TOKEN_QUOTE),
