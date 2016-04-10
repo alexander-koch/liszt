@@ -41,21 +41,42 @@ val_t* builtin_op(env_t* env, val_t* v, char* op) {
 	return x;
 }
 
-val_t* builtin_add(env_t* env, val_t* v) {
-	return builtin_op(env, v, "+");
+val_t* builtin_ord(env_t* env, val_t* v, char* op) {
+	if(v->count != 2) {
+		ERR(v, "Expected two arguments for comparison operation\n");
+		return NULL;
+	}
+	if(v->cell[0]->type != VNUM ||
+		v->cell[1]->type != VNUM) {
+		ERR(v, "Expected two numbers for comparison operation\n");
+		return NULL;
+	}
+
+	int r;
+	if(!strcmp(op, ">")) {
+		r = (v->cell[0]->num > v->cell[1]->num);
+	}
+	if(!strcmp(op, "<")) {
+		r = (v->cell[0]->num < v->cell[1]->num);
+	}
+	if(!strcmp(op, ">=")) {
+		r = (v->cell[0]->num >= v->cell[1]->num);
+	}
+	if(!strcmp(op, "<=")) {
+		r = (v->cell[0]->num <= v->cell[1]->num);
+	}
+	val_free(v);
+	return val_num(r);
 }
 
-val_t* builtin_sub(env_t* env, val_t* v) {
-	return builtin_op(env, v, "-");
-}
-
-val_t* builtin_mul(env_t* env, val_t* v) {
-	return builtin_op(env, v, "*");
-}
-
-val_t* builtin_div(env_t* env, val_t* v) {
-	return builtin_op(env, v, "/");
-}
+val_t* builtin_add(env_t* env, val_t* v) {return builtin_op(env, v, "+");}
+val_t* builtin_sub(env_t* env, val_t* v) {return builtin_op(env, v, "-");}
+val_t* builtin_mul(env_t* env, val_t* v) {return builtin_op(env, v, "*");}
+val_t* builtin_div(env_t* env, val_t* v) {return builtin_op(env, v, "/");}
+val_t* builtin_gt(env_t* env, val_t* v) {return builtin_ord(env, v, ">");}
+val_t* builtin_lt(env_t* env, val_t* v) {return builtin_ord(env, v, "<");}
+val_t* builtin_ge(env_t* env, val_t* v) {return builtin_ord(env, v, ">=");}
+val_t* builtin_le(env_t* env, val_t* v) {return builtin_ord(env, v, "<=");}
 
 val_t* builtin_list(env_t* env, val_t* v) {
 	v->type = VQEXPR;
@@ -150,13 +171,8 @@ val_t* builtin_vardecl(env_t* env, val_t* v, int global) {
 	return val_sexpr();
 }
 
-val_t* builtin_var(env_t* env, val_t* v) {
-	return builtin_vardecl(env, v, 1);
-}
-
-val_t* builtin_local(env_t* env, val_t* v) {
-	return builtin_vardecl(env, v, 0);
-}
+val_t* builtin_var(env_t* env, val_t* v) {return builtin_vardecl(env, v, 1);}
+val_t* builtin_local(env_t* env, val_t* v) {return builtin_vardecl(env, v, 0);}
 
 val_t* builtin_lambda(env_t* env, val_t* v) {
 	if(v->count != 2) {
@@ -183,7 +199,7 @@ val_t* builtin_lambda(env_t* env, val_t* v) {
 	return val_lambda(formals, body);
 }
 
-val_t* val_call(env_t* env, val_t* f, val_t* v) {
+val_t* builtin_call(env_t* env, val_t* f, val_t* v) {
 	if(f->builtin) { return f->builtin(env, v); }
 
 	int given = v->count;
@@ -230,7 +246,7 @@ val_t* eval_sexpr(env_t* env, val_t* v) {
 		return NULL;
 	}
 
-	val_t* result = val_call(env, f, v);
+	val_t* result = builtin_call(env, f, v);
 	val_free(f);
 	return result;
 }
@@ -293,6 +309,11 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "-", builtin_sub);
 	env_add_builtin(env, "*", builtin_mul);
 	env_add_builtin(env, "/", builtin_div);
+
+	env_add_builtin(env, "<", builtin_lt);
+	env_add_builtin(env, ">", builtin_gt);
+	env_add_builtin(env, "<=", builtin_le);
+	env_add_builtin(env, ">=", builtin_ge);
 }
 
 // Run arbitrary data buffer
