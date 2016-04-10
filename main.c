@@ -109,17 +109,17 @@ val_t* builtin_list(env_t* env, val_t* v) {v->type = VQEXPR; return v;}
 
 val_t* builtin_head(env_t* env, val_t* v) {
 	if(v->count != 1) {
-		ERR(v, "Too many arguments for function `head`.");
+		ERR(v, "Too many arguments for function `head`.\n");
 		return NULL;
 	}
 
 	if(v->cell[0]->type != VQEXPR) {
-		ERR(v, "Expected Q-Expression for function `head`.");
+		ERR(v, "Expected Q-Expression for function `head`.\n");
 		return NULL;
 	}
 
 	if(v->cell[0]->count == 0) {
-		ERR(v, "Function `head` passed {}.");
+		ERR(v, "Function `head` passed {}.\n");
 		return NULL;
 	}
 
@@ -130,12 +130,12 @@ val_t* builtin_head(env_t* env, val_t* v) {
 
 val_t* builtin_tail(env_t* env, val_t* v) {
 	if(v->count != 1) {
-		ERR(v, "Too many arguments for function `tail`.");
+		ERR(v, "Too many arguments for function `tail`.\n");
 		return NULL;
 	}
 
 	if(v->cell[0]->type != VQEXPR) {
-		ERR(v, "Expected Q-Expression for function `tail`.");
+		ERR(v, "Expected Q-Expression for function `tail`.\n");
 		return NULL;
 	}
 
@@ -145,6 +145,26 @@ val_t* builtin_tail(env_t* env, val_t* v) {
 	}
 	val_t* x = val_take(v, 0);
 	val_free(val_pop(x, 0));
+	return x;
+}
+
+val_t* builtin_join(env_t* env, val_t* v) {
+	for(unsigned i = 0; i < v->count; i++) {
+		if(v->cell[i]->type != VQEXPR) {
+			ERR(v, "Passed incorrect type to function `join`.\n");
+			return NULL;
+		}
+	}
+
+	val_t* x = val_pop(v, 0);
+	while(v->count) {
+		val_t* y = val_pop(v, 0);
+		while(y->count) {
+			x = val_add(x, val_pop(y, 0));
+		}
+		val_free(y);
+	}
+	val_free(v);
 	return x;
 }
 
@@ -348,6 +368,7 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "list", builtin_list);
 	env_add_builtin(env, "head", builtin_head);
 	env_add_builtin(env, "tail", builtin_tail);
+	env_add_builtin(env, "join", builtin_join);
 	env_add_builtin(env, "eval", builtin_eval);
 	env_add_builtin(env, "local", builtin_local);
 	env_add_builtin(env, "var", builtin_var);
