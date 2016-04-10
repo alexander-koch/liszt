@@ -19,6 +19,7 @@ An anonymous function is declared using the `lambda` operator.
 Variables can either be global or local.
 Use `var` for global variables, `local` for locals.
 You can import files using the `import` function.
+Conditions can be created using the `if` function.
 
 Builtin functions:
 
@@ -30,6 +31,8 @@ Builtin functions:
 - var
 - lambda
 - import
+- if
+- print
 
 Variable declarations:
 ```lisp
@@ -52,6 +55,14 @@ Imports:
 ; Will search for std.lisp and math.lisp
 (import #std)
 (import #math)
+```
+
+Conditions:
+```lisp
+(if (== 0 5)
+	#(print true)
+	#(print false)
+)
 ```
 
 ## License

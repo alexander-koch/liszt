@@ -14,7 +14,7 @@
 (fun #(fst ls) #(eval (head ls)))
 (fun #(snd ls) #(eval (head (tail ls))))
 
-; List operations
+; List length
 (fun #(len l)
 	#(if (== l nil)
 		#(0)
@@ -22,6 +22,7 @@
 	)
 )
 
+; List contains element
 (fun #(contains l e)
 	#(if (== l nil)
 		#(false)
@@ -29,5 +30,13 @@
 			#(true)
 			#(contains (tail l) e)
 		)
+	)
+)
+
+; List index
+(fun #(index l i)
+	#(if (== i 0)
+		#(fst l)
+		#(index (tail l) (- i 1))
 	)
 )

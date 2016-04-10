@@ -282,10 +282,11 @@ val_t* eval(env_t* env, val_t* v) {
 	return NULL;
 }
 
+int prompt = 0;
 void eval_root(env_t* env, val_t* root) {
 	for(unsigned i = 0; i < root->count; i++) {
 		val_t* x = eval(env, root->cell[i]);
-		val_println(x);
+		if(prompt) val_println(x);
 		val_free(x);
 	}
 }
@@ -297,8 +298,8 @@ val_t* builtin_import(env_t* env, val_t* v) {
 		return NULL;
 	}
 
-	if(v->cell[0]->type != VQEXPR ||
-		v->cell[0]->count != 1) {
+	if(v->cell[0]->type != VQEXPR
+		|| v->cell[0]->count != 1) {
 		ERR(v, "One Q-Expression expected\n");
 		return NULL;
 	}
@@ -323,16 +324,17 @@ val_t* builtin_if(env_t* env, val_t* v) {
 		return NULL;
 	}
 
-	val_t* x;
 	v->cell[1]->type = VSEXPR;
 	v->cell[2]->type = VSEXPR;
-	if(v->cell[0]->num) {
-		x = eval(env, val_pop(v, 1));
-	} else {
-		x = eval(env, val_pop(v, 2));
-	}
+	val_t* x = eval(env, val_pop(v, ((v->cell[0]->num) ? 1 : 2)));
 	val_free(v);
 	return x;
+}
+
+val_t* builtin_print(env_t* env, val_t* v) {
+	val_print(v);
+	val_free(v);
+	return val_sexpr();
 }
 
 void env_add_builtins(env_t* env) {
@@ -345,6 +347,7 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "lambda", builtin_lambda);
 	env_add_builtin(env, "import", builtin_import);
 	env_add_builtin(env, "if", builtin_if);
+	env_add_builtin(env, "print", builtin_print);
 
 	env_add_builtin(env, "+", builtin_add);
 	env_add_builtin(env, "-", builtin_sub);
@@ -376,6 +379,7 @@ void run(env_t* env, const char* name, char* input) {
 
 static char buffer[2048];
 void repl(env_t* env) {
+	prompt = 1;
 	puts("Liszt v0.1-dev");
 	puts("Type 'exit' to exit\n");
 	while(1) {
