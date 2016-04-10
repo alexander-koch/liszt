@@ -305,6 +305,30 @@ val_t* builtin_import(env_t* env, val_t* v) {
 	return val_sexpr();
 }
 
+val_t* builtin_if(env_t* env, val_t* v) {
+	if(v->count != 3) {
+		ERR(v, "If expects three arguments\n");
+		return NULL;
+	}
+	if(v->cell[0]->type != VNUM
+		|| v->cell[1]->type != VQEXPR
+		|| v->cell[2]->type != VQEXPR) {
+		ERR(v, "If needs a boolean, followed by two Q-Expressions\n");
+		return NULL;
+	}
+
+	val_t* x;
+	v->cell[1]->type = VSEXPR;
+	v->cell[2]->type = VSEXPR;
+	if(v->cell[0]->num) {
+		x = eval(env, val_pop(v, 1));
+	} else {
+		x = eval(env, val_pop(v, 2));
+	}
+	val_free(v);
+	return x;
+}
+
 void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "list", builtin_list);
 	env_add_builtin(env, "head", builtin_head);
@@ -314,6 +338,7 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "var", builtin_var);
 	env_add_builtin(env, "lambda", builtin_lambda);
 	env_add_builtin(env, "import", builtin_import);
+	env_add_builtin(env, "if", builtin_if);
 
 	env_add_builtin(env, "+", builtin_add);
 	env_add_builtin(env, "-", builtin_sub);

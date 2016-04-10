@@ -200,6 +200,7 @@ int val_eq(val_t* x, val_t* y) {
 			for(unsigned i = 0; i < x->count; i++) {
 				if(!val_eq(x->cell[i], y->cell[i])) return 0;
 			}
+			return 1;
 		}
 		default: break;
 	}
