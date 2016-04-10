@@ -20,6 +20,7 @@ const char* tok2str(token_type_t type) {
         case TOKEN_MUL: return "<mul>";
         case TOKEN_DIV: return "<div>";
         case TOKEN_MOD: return "<mod>";
+        case TOKEN_EQUALS: return "<equals>";
         case TOKEN_EQUAL: return "<equal>";
         case TOKEN_NEQUAL: return "<nequal>";
         case TOKEN_NOT: return "<not>";
@@ -206,6 +207,7 @@ int lex_op(lexer_t* lexer, token_t* token) {
         RESERVED_ENTRY("*", TOKEN_MUL),
         RESERVED_ENTRY("/", TOKEN_DIV),
         RESERVED_ENTRY("%", TOKEN_MOD),
+        RESERVED_ENTRY("==", TOKEN_EQUALS),
         RESERVED_ENTRY("=", TOKEN_EQUAL),
         RESERVED_ENTRY("!=", TOKEN_NEQUAL),
         RESERVED_ENTRY("!", TOKEN_NOT),

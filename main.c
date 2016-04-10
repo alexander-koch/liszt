@@ -41,13 +41,14 @@ val_t* builtin_op(env_t* env, val_t* v, char* op) {
 	return x;
 }
 
-val_t* builtin_ord(env_t* env, val_t* v, char* op) {
+val_t* builtin_cmp(env_t* env, val_t* v, char* op, int num) {
 	if(v->count != 2) {
 		ERR(v, "Expected two arguments for comparison operation\n");
 		return NULL;
 	}
-	if(v->cell[0]->type != VNUM ||
-		v->cell[1]->type != VNUM) {
+
+	if((v->cell[0]->type != VNUM ||
+		v->cell[1]->type != VNUM) && num) {
 		ERR(v, "Expected two numbers for comparison operation\n");
 		return NULL;
 	}
@@ -65,6 +66,13 @@ val_t* builtin_ord(env_t* env, val_t* v, char* op) {
 	if(!strcmp(op, "<=")) {
 		r = (v->cell[0]->num <= v->cell[1]->num);
 	}
+	if(!strcmp(op, "==")) {
+		r = val_eq(v->cell[0], v->cell[1]);
+	}
+	if(!strcmp(op, "!=")) {
+		r = !val_eq(v->cell[0], v->cell[1]);
+	}
+
 	val_free(v);
 	return val_num(r);
 }
@@ -73,10 +81,12 @@ val_t* builtin_add(env_t* env, val_t* v) {return builtin_op(env, v, "+");}
 val_t* builtin_sub(env_t* env, val_t* v) {return builtin_op(env, v, "-");}
 val_t* builtin_mul(env_t* env, val_t* v) {return builtin_op(env, v, "*");}
 val_t* builtin_div(env_t* env, val_t* v) {return builtin_op(env, v, "/");}
-val_t* builtin_gt(env_t* env, val_t* v) {return builtin_ord(env, v, ">");}
-val_t* builtin_lt(env_t* env, val_t* v) {return builtin_ord(env, v, "<");}
-val_t* builtin_ge(env_t* env, val_t* v) {return builtin_ord(env, v, ">=");}
-val_t* builtin_le(env_t* env, val_t* v) {return builtin_ord(env, v, "<=");}
+val_t* builtin_gt(env_t* env, val_t* v) {return builtin_cmp(env, v, ">", 1);}
+val_t* builtin_lt(env_t* env, val_t* v) {return builtin_cmp(env, v, "<", 1);}
+val_t* builtin_ge(env_t* env, val_t* v) {return builtin_cmp(env, v, ">=", 1);}
+val_t* builtin_le(env_t* env, val_t* v) {return builtin_cmp(env, v, "<=", 1);}
+val_t* builtin_eq(env_t* env, val_t* v) {return builtin_cmp(env, v, "==", 0);}
+val_t* builtin_ne(env_t* env, val_t* v) {return builtin_cmp(env, v, "!=", 0);}
 
 val_t* builtin_list(env_t* env, val_t* v) {
 	v->type = VQEXPR;
@@ -314,6 +324,8 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, ">", builtin_gt);
 	env_add_builtin(env, "<=", builtin_le);
 	env_add_builtin(env, ">=", builtin_ge);
+	env_add_builtin(env, "==", builtin_eq);
+	env_add_builtin(env, "!=", builtin_ne);
 }
 
 // Run arbitrary data buffer

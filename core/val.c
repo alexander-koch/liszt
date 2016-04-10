@@ -180,6 +180,32 @@ val_t* val_copy(val_t* v) {
 	return x;
 }
 
+int val_eq(val_t* x, val_t* y) {
+	if(x->type != y->type) return 0;
+
+	switch(x->type) {
+		case VNUM: return x->num == y->num;
+		case VSYM: return !strcmp(x->sym, y->sym);
+		case VFUN: {
+			if(x->builtin || y->builtin) {
+				return x->builtin == y->builtin;
+			} else {
+				return val_eq(x->formals, y->formals)
+					&& val_eq(x->body, y->body);
+			}
+		}
+		case VQEXPR:
+		case VSEXPR: {
+			if(x->count != y->count) return 0;
+			for(unsigned i = 0; i < x->count; i++) {
+				if(!val_eq(x->cell[i], y->cell[i])) return 0;
+			}
+		}
+		default: break;
+	}
+	return 0;
+}
+
 void val_print(val_t* v) {
 	if(v == NULL) return;
 

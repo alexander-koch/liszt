@@ -66,6 +66,7 @@ val_t* val_add(val_t* v, val_t* x);
 val_t* val_pop(val_t* v, int i);
 val_t* val_take(val_t* v, int i);
 val_t* val_copy(val_t* v);
+int val_eq(val_t* x, val_t* y);
 
 void val_print(val_t* v);
 void val_println(val_t* v);
