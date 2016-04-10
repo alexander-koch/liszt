@@ -13,7 +13,7 @@
 	env->error = 1
 
 val_t* eval(env_t* env, val_t* v);
-val_t* builtin_op(env_t* env, val_t* v, char* op) {
+val_t* builtin_op(env_t* env, val_t* v, token_type_t op) {
 	for(unsigned i = 0; i < v->count; i++) {
 		if(v->cell[i]->type != VNUM) {
 			ERR(v, "Cannot operate on non-number!\n");
@@ -22,17 +22,20 @@ val_t* builtin_op(env_t* env, val_t* v, char* op) {
 	}
 
 	val_t* x = val_pop(v, 0);
-	if(!strcmp(op, "-") && v->count == 0) {
+	if(op == TOKEN_SUB && v->count == 0) {
 		x->num = -x->num;
 	}
 
 	while(v->count > 0) {
 		val_t* y = val_pop(v, 0);
 
-		if(!strcmp(op, "+")) { x->num += y->num; }
-		if(!strcmp(op, "-")) { x->num -= y->num; }
-		if(!strcmp(op, "*")) { x->num *= y->num; }
-		if(!strcmp(op, "/")) { x->num /= y->num; }
+		switch(op) {
+			case TOKEN_ADD: {x->num += y->num; break; }
+			case TOKEN_SUB: {x->num -= y->num; break; }
+			case TOKEN_MUL: {x->num *= y->num; break; }
+			case TOKEN_DIV: {x->num /= y->num; break; }
+			default: break;
+		}
 
 		val_free(y);
 	}
@@ -41,7 +44,7 @@ val_t* builtin_op(env_t* env, val_t* v, char* op) {
 	return x;
 }
 
-val_t* builtin_cmp(env_t* env, val_t* v, char* op, int num) {
+val_t* builtin_cmp(env_t* env, val_t* v, token_type_t op, int num) {
 	if(v->count != 2) {
 		ERR(v, "Expected two arguments for comparison operation\n");
 		return NULL;
@@ -53,40 +56,43 @@ val_t* builtin_cmp(env_t* env, val_t* v, char* op, int num) {
 		return NULL;
 	}
 
-	int r;
-	if(!strcmp(op, ">")) {
-		r = (v->cell[0]->num > v->cell[1]->num);
-	}
-	if(!strcmp(op, "<")) {
-		r = (v->cell[0]->num < v->cell[1]->num);
-	}
-	if(!strcmp(op, ">=")) {
-		r = (v->cell[0]->num >= v->cell[1]->num);
-	}
-	if(!strcmp(op, "<=")) {
-		r = (v->cell[0]->num <= v->cell[1]->num);
-	}
-	if(!strcmp(op, "==")) {
-		r = val_eq(v->cell[0], v->cell[1]);
-	}
-	if(!strcmp(op, "!=")) {
-		r = !val_eq(v->cell[0], v->cell[1]);
+	int r = 0;
+	switch(op) {
+		case TOKEN_GT:
+			r = (v->cell[0]->num > v->cell[1]->num);
+			break;
+		case TOKEN_LT:
+			r = (v->cell[0]->num < v->cell[1]->num);
+			break;
+		case TOKEN_GE:
+			r = (v->cell[0]->num >= v->cell[1]->num);
+			break;
+		case TOKEN_LE:
+			r = (v->cell[0]->num <= v->cell[1]->num);
+			break;
+		case TOKEN_EQUAL:
+			r = val_eq(v->cell[0], v->cell[1]);
+			break;
+		case TOKEN_NEQUAL:
+			r = !val_eq(v->cell[0], v->cell[1]);
+			break;
+		default: break;
 	}
 
 	val_free(v);
 	return val_num(r);
 }
 
-val_t* builtin_add(env_t* env, val_t* v) {return builtin_op(env, v, "+");}
-val_t* builtin_sub(env_t* env, val_t* v) {return builtin_op(env, v, "-");}
-val_t* builtin_mul(env_t* env, val_t* v) {return builtin_op(env, v, "*");}
-val_t* builtin_div(env_t* env, val_t* v) {return builtin_op(env, v, "/");}
-val_t* builtin_gt(env_t* env, val_t* v) {return builtin_cmp(env, v, ">", 1);}
-val_t* builtin_lt(env_t* env, val_t* v) {return builtin_cmp(env, v, "<", 1);}
-val_t* builtin_ge(env_t* env, val_t* v) {return builtin_cmp(env, v, ">=", 1);}
-val_t* builtin_le(env_t* env, val_t* v) {return builtin_cmp(env, v, "<=", 1);}
-val_t* builtin_eq(env_t* env, val_t* v) {return builtin_cmp(env, v, "==", 0);}
-val_t* builtin_ne(env_t* env, val_t* v) {return builtin_cmp(env, v, "!=", 0);}
+val_t* builtin_add(env_t* env, val_t* v) {return builtin_op(env, v, TOKEN_ADD);}
+val_t* builtin_sub(env_t* env, val_t* v) {return builtin_op(env, v, TOKEN_SUB);}
+val_t* builtin_mul(env_t* env, val_t* v) {return builtin_op(env, v, TOKEN_MUL);}
+val_t* builtin_div(env_t* env, val_t* v) {return builtin_op(env, v, TOKEN_DIV);}
+val_t* builtin_gt(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_GT, 1);}
+val_t* builtin_lt(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_LT, 1);}
+val_t* builtin_ge(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_GE, 1);}
+val_t* builtin_le(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_LE, 1);}
+val_t* builtin_eq(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_EQUAL, 0);}
+val_t* builtin_ne(env_t* env, val_t* v) {return builtin_cmp(env, v, TOKEN_NEQUAL, 0);}
 
 val_t* builtin_list(env_t* env, val_t* v) {
 	v->type = VQEXPR;

@@ -45,28 +45,28 @@ typedef enum {
     TOKEN_LBRACKET,  // '['
     TOKEN_RBRACKET,  // ']'
     TOKEN_COMMA,     // ','
-    TOKEN_ADD,       // '+' OP
-    TOKEN_SUB,       // '-' OP
-    TOKEN_MUL,       // '*' OP
-    TOKEN_DIV,       // '/' OP
-    TOKEN_MOD,       // '%' OP
-    TOKEN_EQUALS,    // '==' OP
-    TOKEN_EQUAL,     // '=' OP
-    TOKEN_NEQUAL,    // '!=' OP
-    TOKEN_NOT,       // '!' OP
+    TOKEN_ADD,       // '+'
+    TOKEN_SUB,       // '-'
+    TOKEN_MUL,       // '*'
+    TOKEN_DIV,       // '/'
+    TOKEN_MOD,       // '%'
+    TOKEN_EQUALS,    // '=='
+    TOKEN_EQUAL,     // '='
+    TOKEN_NEQUAL,    // '!='
+    TOKEN_NOT,       // '!'
     TOKEN_DOT,       // '.'
-    TOKEN_BITLSHIFT, // '<<' OP
-    TOKEN_BITRSHIFT, // '>>' OP
-    TOKEN_LEQUAL,    // '<=' OP
-    TOKEN_GEQUAL,    // '>=' OP
-    TOKEN_LESS,      // '<' OP
-    TOKEN_GREATER,   // '>' OP
-    TOKEN_AND,       // '&&' OP
-    TOKEN_OR,        // '||' OP
-    TOKEN_BITAND,    // '&' OP
-    TOKEN_BITOR,     // '|' OP
-    TOKEN_BITXOR,    // '^' OP
-    TOKEN_BITNOT,    // '~' OP
+    TOKEN_BITLSHIFT, // '<<'
+    TOKEN_BITRSHIFT, // '>>'
+    TOKEN_LE,        // '<='
+    TOKEN_GE,        // '>='
+    TOKEN_LT,        // '<'
+    TOKEN_GT,        // '>'
+    TOKEN_AND,       // '&&'
+    TOKEN_OR,        // '||'
+    TOKEN_BITAND,    // '&'
+    TOKEN_BITOR,     // '|'
+    TOKEN_BITXOR,    // '^'
+    TOKEN_BITNOT,    // '~'
     TOKEN_DOUBLECOLON, // '::'
     TOKEN_COLON,     // ':'
     TOKEN_AT,        // '@'

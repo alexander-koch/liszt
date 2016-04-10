@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS := -I. -Wall
-MODULE := liszt 
+MODULE := liszt
 FILES := core/util.c \
 		core/val.c \
 		core/bytebuffer.c \
@@ -8,4 +8,4 @@ FILES := core/util.c \
 		parser/parser.c
 
 all:
-	$(CC) $(CFLAGS) -g -o $(MODULE) main.c $(FILES)
+	$(CC) $(CFLAGS) -O2 -o $(MODULE) main.c $(FILES)

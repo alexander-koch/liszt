@@ -27,10 +27,10 @@ const char* tok2str(token_type_t type) {
         case TOKEN_DOT: return "<dot>";
         case TOKEN_BITLSHIFT: return ">bitlshift>";
         case TOKEN_BITRSHIFT: return "<bitrshift>";
-        case TOKEN_LEQUAL: return "<lequal>";
-        case TOKEN_GEQUAL: return "<gequal>";
-        case TOKEN_LESS: return "<less>";
-        case TOKEN_GREATER: return "<greater>";
+        case TOKEN_LE: return "<less_equal>";
+        case TOKEN_GE: return "<greater_equal>";
+        case TOKEN_LT: return "<less>";
+        case TOKEN_GT: return "<greater>";
         case TOKEN_AND: return "<and>";
         case TOKEN_OR: return "<or>";
         case TOKEN_BITAND: return "<bitand>";
@@ -213,11 +213,11 @@ int lex_op(lexer_t* lexer, token_t* token) {
         RESERVED_ENTRY("!", TOKEN_NOT),
         RESERVED_ENTRY(".", TOKEN_DOT),
         RESERVED_ENTRY("<<", TOKEN_BITLSHIFT),
-        RESERVED_ENTRY("<=", TOKEN_LEQUAL),
-        RESERVED_ENTRY("<", TOKEN_LESS),
+        RESERVED_ENTRY("<=", TOKEN_LE),
+        RESERVED_ENTRY("<", TOKEN_LT),
         RESERVED_ENTRY(">>", TOKEN_BITRSHIFT),
-        RESERVED_ENTRY(">=", TOKEN_GEQUAL),
-        RESERVED_ENTRY(">", TOKEN_GREATER),
+        RESERVED_ENTRY(">=", TOKEN_GE),
+        RESERVED_ENTRY(">", TOKEN_GT),
         RESERVED_ENTRY("&&", TOKEN_AND),
         RESERVED_ENTRY("&", TOKEN_BITAND),
         RESERVED_ENTRY("||", TOKEN_OR),
