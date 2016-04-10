@@ -1,3 +1,9 @@
+/**
+ * lexer.h
+ * @author Alexander Koch 2016
+ * @desc Lexical analysis
+ */
+
 #ifndef lexer_h
 #define lexer_h
 

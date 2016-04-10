@@ -1,3 +1,9 @@
+/**
+ * val.h
+ * @author Alexander Koch 2016
+ * @desc Generic value representation
+ */
+
 #ifndef val_h
 #define val_h
 
