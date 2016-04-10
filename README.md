@@ -67,4 +67,7 @@ Conditions:
 
 ## License
 
+MIT
 Copyright (c) Alexander Koch 2016
+
+Thanks to Daniel Holden (@orangeduck)
