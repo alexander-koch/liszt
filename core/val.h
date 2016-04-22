@@ -21,6 +21,7 @@ typedef val_t* (*vbuiltin)(env_t*, val_t*);
 enum val_type_t {
 	VNUM,
 	VSYM,
+	VSTR,
 	VFUN,
 	VSEXPR,
 	VQEXPR
@@ -32,6 +33,7 @@ struct val_t {
 	union {
 		double num;
 		char* sym;
+		char* str;
 		vbuiltin builtin;
 		struct val_t** cell;
 	};
@@ -64,6 +66,7 @@ env_t* env_copy(env_t* env);
 
 val_t* val_num(double num);
 val_t* val_sym(char* sym);
+val_t* val_str(char* str);
 val_t* val_fun(vbuiltin func);
 val_t* val_sexpr();
 val_t* val_lambda(val_t* formals, val_t* body);

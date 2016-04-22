@@ -97,6 +97,12 @@ val_t* val_sym(char* sym) {
 	return v;
 }
 
+val_t* val_str(char* str) {
+	val_t* v = val_sym(str);
+	v->type = VSTR;
+	return v;
+}
+
 val_t* val_fun(vbuiltin func) {
 	val_t* v = malloc(sizeof(val_t));
 	v->type = VFUN;
@@ -160,6 +166,7 @@ val_t* val_copy(val_t* v) {
 			break;
 		}
 		case VNUM: x->num = v->num; break;
+		case VSTR:
 		case VSYM: {
 			x->sym = malloc(strlen(v->sym)+1);
 			strcpy(x->sym, v->sym);
@@ -185,6 +192,7 @@ int val_eq(val_t* x, val_t* y) {
 
 	switch(x->type) {
 		case VNUM: return x->num == y->num;
+		case VSTR:
 		case VSYM: return !strcmp(x->sym, y->sym);
 		case VFUN: {
 			if(x->builtin || y->builtin) {
@@ -213,6 +221,9 @@ void val_print(val_t* v) {
 	switch(v->type) {
 		case VNUM:
 			printf("%f", v->num);
+			break;
+		case VSTR:
+			printf("\"%s\"", v->str);
 			break;
 		case VSYM:
 			printf("%s", v->sym);
@@ -258,6 +269,7 @@ void val_println(val_t* v) {
 void val_free(val_t* v) {
 	if(v == NULL) return;
 	switch(v->type) {
+		case VSTR:
 		case VSYM:
 			free(v->sym);
 			break;

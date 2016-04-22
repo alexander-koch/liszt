@@ -297,6 +297,7 @@ val_t* eval_sexpr(env_t* env, val_t* v) {
 val_t* eval(env_t* env, val_t* v) {
 	switch(v->type) {
 		case VNUM: return v;
+		case VSTR: return v;
 		case VSYM: {
 			val_t* x = env_get(env, v);
 			val_free(v);
@@ -306,7 +307,7 @@ val_t* eval(env_t* env, val_t* v) {
 		case VQEXPR: return v;
 		default: break;
 	}
-	return NULL;
+	return v;
 }
 
 int prompt = 0;

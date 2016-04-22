@@ -68,6 +68,12 @@ val_t* parse_symbol(parser_t* parser) {
 	return val_sym(word->value);
 }
 
+val_t* parse_string(parser_t* parser) {
+	token_t* str = parser_peek(parser, 0);
+	parser->position++;
+	return val_str(str->value);
+}
+
 // parse main expression
 val_t* parse_expr(parser_t* parser) {
 	token_t* token = parser_peek(parser, 0);
@@ -78,6 +84,8 @@ val_t* parse_expr(parser_t* parser) {
 		return parse_number(parser);
 	if(token->type == TOKEN_WORD || is_operator(token))
 		return parse_symbol(parser);
+	if(token->type == TOKEN_STRING)
+		return parse_string(parser);
 
 	if(token->type == TOKEN_NUMBERSIGN) {
 		parser->position++;
