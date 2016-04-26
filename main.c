@@ -252,10 +252,25 @@ val_t* builtin_call(env_t* env, val_t* f, val_t* v) {
 		if(f->formals->count == 0) {
 			val_free(v);
 			printf("Function passed too many arguments: (got: %d, expected: %d)\n", given, total);
-			return 0;
+			return NULL;
 		}
 
 		val_t* sym = val_pop(f->formals, 0);
+
+		if(!strcmp(sym->sym, "&")) {
+			if(f->formals->count != 1) {
+				val_free(sym);
+				ERR(v, "Function format invalid\n");
+				return NULL;
+			}
+
+			val_t* nsym = val_pop(f->formals, 0);
+			env_put(f->env, nsym, builtin_list(env, v));
+			val_free(sym);
+			val_free(nsym);
+			break;
+		}
+
 		val_t* val = val_pop(v, 0);
 		env_put(env, sym, val);
 		val_free(sym);
@@ -263,6 +278,21 @@ val_t* builtin_call(env_t* env, val_t* f, val_t* v) {
 	}
 
 	val_free(v);
+
+	if(f->formals->count > 0 && !strcmp(f->formals->cell[0]->sym, "&")) {
+		if(f->formals->count != 2) {
+			printf("Function format invalid}\n");
+			return NULL;
+		}
+
+		val_free(val_pop(f->formals, 0));
+		val_t* sym = val_pop(f->formals, 0);
+		val_t* val = val_sexpr();
+		val->type = VQEXPR;
+		env_put(f->env, sym, val);
+		val_free(sym);
+		val_free(val);
+	}
 
 	if(f->formals->count == 0) {
 		f->env->par = env;
@@ -332,11 +362,13 @@ val_t* builtin_import(env_t* env, val_t* v) {
 		return NULL;
 	}
 
+	prompt = 0;
 	char* name = v->cell[0]->cell[0]->sym;
 	char* module = concat(name, ".lisp");
 	val_free(v);
 	run_file(env, module);
 	free(module);
+	prompt = 1;
 	return val_sexpr();
 }
 
@@ -394,7 +426,7 @@ void env_add_builtins(env_t* env) {
 // Run arbitrary data buffer
 void run(env_t* env, const char* name, char* input) {
 	size_t numTokens;
-	token_t* tokens = lexer_scan("<stdin>", input, &numTokens);
+	token_t* tokens = lexer_scan(name, input, &numTokens);
 	if(tokens) {
 		// lexer_print_tokens(tokens, numTokens);
 		val_t* root = parse_buffer(tokens, numTokens);
@@ -409,13 +441,21 @@ void run(env_t* env, const char* name, char* input) {
 static char buffer[2048];
 void repl(env_t* env) {
 	prompt = 1;
-	puts("Liszt v0.1-dev");
+	char font[] = {
+	"    ___            __ \n"
+	"   / (_)________  / /_\n"
+	"  / / / ___/_  / / __/\n"
+	" / / (__  ) / /_/ /_  \n"
+	"/_/_/____/ /___/\\__/ \n"
+	"   Liszt v0.2-dev     \n"
+	};
+	puts(font);
 	puts("Type 'exit' to exit\n");
 	while(1) {
 		fputs("liszt> ", stdout);
 		fgets(buffer, 2048, stdin);
 		if(!strncmp(buffer, "exit", 4)) break;
-		run(env, "<stdin>", buffer);
+		run(env, "stdin", buffer);
 		env->error = 0;
 	}
 }

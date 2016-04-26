@@ -6,9 +6,9 @@
 (var #false 0)
 
 ; Function varinition formals and body as parameters
-(var #fun 
+(var #fun
   (lambda #(f b)
-    #(var (head f) 
+    #(var (head f)
       (lambda (tail f) b))))
 
 ; First and second element of a list
@@ -34,3 +34,13 @@
   #(if (== i 0)
     #(fst l)
     #(index (tail l) (- i 1))))
+
+; Filter
+(fun #(filter f l)
+  #(if (== l nil)
+    #(nil)
+    #(join
+      (if (f (fst l))
+        #(head l)
+        #(nil))
+      (filter f (tail l)))))
