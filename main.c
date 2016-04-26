@@ -30,10 +30,10 @@ val_t* builtin_op(env_t* env, val_t* v, token_type_t op) {
 		val_t* y = val_pop(v, 0);
 
 		switch(op) {
-			case TOKEN_ADD: {x->num += y->num; break; }
-			case TOKEN_SUB: {x->num -= y->num; break; }
-			case TOKEN_MUL: {x->num *= y->num; break; }
-			case TOKEN_DIV: {x->num /= y->num; break; }
+			case TOKEN_ADD: x->num += y->num; break;
+			case TOKEN_SUB: x->num -= y->num; break;
+			case TOKEN_MUL: x->num *= y->num; break;
+			case TOKEN_DIV: x->num /= y->num; break;
 			default: break;
 		}
 
@@ -104,8 +104,8 @@ val_t* builtin_eq(env_t* env, val_t* v)
 	{return builtin_cmp(env, v, TOKEN_EQUAL, 0);}
 val_t* builtin_ne(env_t* env, val_t* v)
 	{return builtin_cmp(env, v, TOKEN_NEQUAL, 0);}
-
-val_t* builtin_list(env_t* env, val_t* v) {v->type = VQEXPR; return v;}
+val_t* builtin_list(env_t* env, val_t* v)
+	{v->type = VQEXPR; return v;}
 
 val_t* builtin_head(env_t* env, val_t* v) {
 	if(v->count != 1) {

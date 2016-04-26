@@ -219,9 +219,14 @@ void val_print(val_t* v) {
 	if(v == NULL) return;
 
 	switch(v->type) {
-		case VNUM:
-			printf("%f", v->num);
+		case VNUM: {
+			if(floorf(v->num) == v->num) {
+				printf("%d", (int)v->num);
+			} else {
+				printf("%f", v->num);
+			}
 			break;
+		}
 		case VSTR:
 			printf("\"%s\"", v->str);
 			break;
