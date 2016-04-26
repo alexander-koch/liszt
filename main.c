@@ -396,9 +396,10 @@ val_t* builtin_if(env_t* env, val_t* v) {
 }
 
 val_t* builtin_print(env_t* env, val_t* v) {
-	val_print(v);
-	val_free(v);
-	return val_sexpr();
+	val_t* x = eval(env, v);
+	val_print(x);
+	val_free(x);
+	return NULL;
 }
 
 void env_add_builtins(env_t* env) {

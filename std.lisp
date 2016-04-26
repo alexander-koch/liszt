@@ -21,6 +21,12 @@
     #(0)
     #(+ 1 (len (tail l)))))
 
+; Return the last element
+(fun #(last l)
+  #(if (== (len l) 1)
+    #(eval l)
+    #(last (tail l))))
+
 ; List contains element
 (fun #(contains l e)
   #(if (== l nil)
@@ -34,6 +40,12 @@
   #(if (== i 0)
     #(fst l)
     #(index (tail l) (- i 1))))
+
+; Define a block
+(fun #(block & l)
+  #(if (== l nil)
+    #(nil)
+    #(last l)))
 
 ; Filter by function
 (fun #(filter f l)
