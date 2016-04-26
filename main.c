@@ -34,6 +34,7 @@ val_t* builtin_op(env_t* env, val_t* v, token_type_t op) {
 			case TOKEN_SUB: x->num -= y->num; break;
 			case TOKEN_MUL: x->num *= y->num; break;
 			case TOKEN_DIV: x->num /= y->num; break;
+			case TOKEN_MOD: x->num = ((int)x->num) % (int)y->num; break;
 			default: break;
 		}
 
@@ -92,6 +93,8 @@ val_t* builtin_mul(env_t* env, val_t* v)
 	{return builtin_op(env, v, TOKEN_MUL);}
 val_t* builtin_div(env_t* env, val_t* v)
 	{return builtin_op(env, v, TOKEN_DIV);}
+val_t* builtin_mod(env_t* env, val_t* v)
+	{return builtin_op(env, v, TOKEN_MOD);}
 val_t* builtin_gt(env_t* env, val_t* v)
 	{return builtin_cmp(env, v, TOKEN_GT, 1);}
 val_t* builtin_lt(env_t* env, val_t* v)
@@ -362,13 +365,14 @@ val_t* builtin_import(env_t* env, val_t* v) {
 		return NULL;
 	}
 
+	int tmp = prompt;
 	prompt = 0;
 	char* name = v->cell[0]->cell[0]->sym;
 	char* module = concat(name, ".lisp");
 	val_free(v);
 	run_file(env, module);
 	free(module);
-	prompt = 1;
+	prompt = tmp;
 	return val_sexpr();
 }
 
@@ -414,6 +418,7 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "-", builtin_sub);
 	env_add_builtin(env, "*", builtin_mul);
 	env_add_builtin(env, "/", builtin_div);
+	env_add_builtin(env, "%", builtin_mod);
 
 	env_add_builtin(env, "<", builtin_lt);
 	env_add_builtin(env, ">", builtin_gt);

@@ -35,7 +35,7 @@
     #(fst l)
     #(index (tail l) (- i 1))))
 
-; Filter
+; Filter by function
 (fun #(filter f l)
   #(if (== l nil)
     #(nil)

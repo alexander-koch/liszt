@@ -28,6 +28,11 @@
 (fun #(toRadian x) #(* x (/ pi 180)))
 (fun #(toDegree x) #(* x (/ 180 pi)))
 
+(fun #(sum-digits x)
+    #(if (== x 0)
+      #(0)
+      #(+ (% x 10) (sum-digits (/ (- x (% x 10)) 10)))))
+
 ; Vector math
 (fun #(vec2 x y) #(list x y))
 (fun #(vec3 x y z) #(list x y z))
