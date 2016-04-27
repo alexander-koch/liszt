@@ -402,6 +402,23 @@ val_t* builtin_print(env_t* env, val_t* v) {
 	return NULL;
 }
 
+val_t* builtin_sqrt(env_t* env, val_t* v) {
+	val_t* x = val_pop(v, 0);
+	val_free(v);
+	x->num = sqrt(x->num);
+	return x;
+}
+
+val_t* builtin_pow(env_t* env, val_t* v) {
+	val_t* x = val_pop(v, 0);
+	val_t* y = val_pop(v, 0);
+	val_free(v);
+	
+	x->num = pow(x->num, y->num);
+	val_free(y);
+	return x;
+}
+
 void env_add_builtins(env_t* env) {
 	env_add_builtin(env, "list", builtin_list);
 	env_add_builtin(env, "head", builtin_head);
@@ -427,6 +444,8 @@ void env_add_builtins(env_t* env) {
 	env_add_builtin(env, ">=", builtin_ge);
 	env_add_builtin(env, "==", builtin_eq);
 	env_add_builtin(env, "!=", builtin_ne);
+	env_add_builtin(env, "sqrt", builtin_sqrt);
+	env_add_builtin(env, "pow", builtin_pow);
 }
 
 // Run arbitrary data buffer

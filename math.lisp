@@ -6,7 +6,7 @@
 (var #e 2.7182818)
 
 ; Functions
-(fun #(sq x) #(* x x))
+(fun #(sqr x) #(* x x))
 (fun #(inc x) #(+ x 1))
 (fun #(dec x) #(- x 1))
 (fun #(neg x) #(- x))
@@ -15,15 +15,22 @@
     #(* x (- 1))
 	#(x)))
 
-(fun #(pow x n)
-  #(if (> n 1)
-    #(* x (pow x (- n 1)))
-    #(x)))
+(fun #(exp n) #(pow e n))
 
 (fun #(fact n)
   #(if (<= n 1)
     #(1)
     #(* n (fact (- n 1)))))
+
+(fun #(min x y)
+  #(if (< x y)
+    #(x)
+    #(y)))
+
+(fun #(max x y)
+  #(if (> x y)
+    #(x)
+    #(y)))
 
 (fun #(toRadian x) #(* x (/ pi 180)))
 (fun #(toDegree x) #(* x (/ 180 pi)))
