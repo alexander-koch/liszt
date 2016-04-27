@@ -35,6 +35,16 @@
 (fun #(toRadian x) #(* x (/ pi 180)))
 (fun #(toDegree x) #(* x (/ 180 pi)))
 
+(fun #(minusp x)
+  #(if (< x 0)
+    #(true)
+	#(false)))
+
+(fun #(plusp x)
+  #(if (> x 0)
+    #(true)
+    #(false)))
+
 (fun #(sum-digits x)
     #(if (== x 0)
       #(0)
