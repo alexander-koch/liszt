@@ -413,7 +413,6 @@ val_t* builtin_pow(env_t* env, val_t* v) {
 	val_t* x = val_pop(v, 0);
 	val_t* y = val_pop(v, 0);
 	val_free(v);
-	
 	x->num = pow(x->num, y->num);
 	val_free(y);
 	return x;

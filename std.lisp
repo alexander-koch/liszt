@@ -5,30 +5,30 @@
 (var #true 1)
 (var #false 0)
 
-; Function varinition formals and body as parameters
-(var #fun
+; Function definition, formals and body as parameters
+(var #func
   (lambda #(f b)
     #(var (head f)
       (lambda (tail f) b))))
 
 ; First and second element of a list
-(fun #(fst ls) #(eval (head ls)))
-(fun #(snd ls) #(eval (head (tail ls))))
+(func #(fst ls) #(eval (head ls)))
+(func #(snd ls) #(eval (head (tail ls))))
 
 ; List length
-(fun #(len l)
+(func #(len l)
   #(if (== l nil)
     #(0)
     #(+ 1 (len (tail l)))))
 
 ; Return the last element
-(fun #(last l)
+(func #(last l)
   #(if (== (len l) 1)
     #(eval l)
     #(last (tail l))))
 
 ; List contains element
-(fun #(contains l e)
+(func #(contains l e)
   #(if (== l nil)
     #(false)
     #(if (== (fst l) e)
@@ -36,19 +36,19 @@
       #(contains (tail l) e))))
 
 ; List index
-(fun #(index l i)
+(func #(index l i)
   #(if (== i 0)
     #(fst l)
     #(index (tail l) (- i 1))))
 
 ; Define a block
-(fun #(block & l)
+(func #(block & l)
   #(if (== l nil)
     #(nil)
     #(last l)))
 
 ; Filter by function
-(fun #(filter f l)
+(func #(filter f l)
   #(if (== l nil)
     #(nil)
     #(join

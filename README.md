@@ -43,11 +43,10 @@ Variable declarations:
 Functions:
 ```lisp
 ; Declare function main with parameters x and y
-
 (var #main (lambda #(x y) #(* x y)))
 
 ; or using std.lisp
-(fun #(main x y) #(* x y))
+(func #(main x y) #(* x y))
 ```
 
 Imports:
@@ -61,8 +60,7 @@ Conditions:
 ```lisp
 (if (== 0 5)
 	#(print true)
-	#(print false)
-)
+	#(print false))
 ```
 
 ## License

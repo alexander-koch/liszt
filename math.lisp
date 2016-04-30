@@ -6,55 +6,55 @@
 (var #e 2.7182818)
 
 ; Functions
-(fun #(sqr x) #(* x x))
-(fun #(inc x) #(+ x 1))
-(fun #(dec x) #(- x 1))
-(fun #(neg x) #(- x))
-(fun #(abs x)
+(func #(sqr x) #(* x x))
+(func #(inc x) #(+ x 1))
+(func #(dec x) #(- x 1))
+(func #(neg x) #(- x))
+(func #(abs x)
   #(if (< x 0)
     #(* x (- 1))
 	#(x)))
 
-(fun #(exp n) #(pow e n))
+(func #(exp n) #(pow e n))
 
-(fun #(fact n)
+(func #(fact n)
   #(if (<= n 1)
     #(1)
     #(* n (fact (- n 1)))))
 
-(fun #(min x y)
+(func #(min x y)
   #(if (< x y)
     #(x)
     #(y)))
 
-(fun #(max x y)
+(func #(max x y)
   #(if (> x y)
     #(x)
     #(y)))
 
-(fun #(toRadian x) #(* x (/ pi 180)))
-(fun #(toDegree x) #(* x (/ 180 pi)))
+(func #(toRadian x) #(* x (/ pi 180)))
+(func #(toDegree x) #(* x (/ 180 pi)))
 
-(fun #(minusp x)
+(func #(minusp x)
   #(if (< x 0)
     #(true)
 	#(false)))
 
-(fun #(plusp x)
+(func #(plusp x)
   #(if (> x 0)
     #(true)
     #(false)))
 
-(fun #(sum-digits x)
+(func #(sum-digits x)
     #(if (== x 0)
       #(0)
       #(+ (% x 10) (sum-digits (/ (- x (% x 10)) 10)))))
 
 ; Vector math
-(fun #(vec2 x y) #(list x y))
-(fun #(vec3 x y z) #(list x y z))
+(func #(vec2 x y) #(list x y))
+(func #(vec3 x y z) #(list x y z))
 
-(fun #(dot x y)
+(func #(dot x y)
   #(if (== x nil)
     #(0)
     #(+ (* (fst x) (fst y)) (dot (tail x) (tail y)))))
