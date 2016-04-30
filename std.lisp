@@ -11,6 +11,12 @@
     #(var (head f)
       (lambda (tail f) b))))
 
+; When operator
+(func #(when x y)
+  #(if (== x true)
+    #(y)
+    #(nil)))
+
 ; First and second element of a list
 (func #(fst ls) #(eval (head ls)))
 (func #(snd ls) #(eval (head (tail ls))))

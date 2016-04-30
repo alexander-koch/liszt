@@ -398,8 +398,7 @@ val_t* builtin_if(env_t* env, val_t* v) {
 val_t* builtin_print(env_t* env, val_t* v) {
 	val_t* x = eval(env, v);
 	val_print(x);
-	val_free(x);
-	return NULL;
+	return x;
 }
 
 val_t* builtin_sqrt(env_t* env, val_t* v) {
