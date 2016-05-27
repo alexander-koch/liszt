@@ -1,4 +1,5 @@
 CC := gcc
+PREFIX := usr/local
 CFLAGS := -I. -Wall
 MODULE := liszt
 FILES := core/util.c \
@@ -7,5 +8,14 @@ FILES := core/util.c \
 		lexer/lexer.c \
 		parser/parser.c
 
-all:
+$(MODULE):
 	$(CC) $(CFLAGS) -O2 -o $(MODULE) main.c $(FILES)
+
+install: $(MODULE)
+	install $(MODULE) $(PREFIX)/bin
+
+uninstall:
+	rm $(PREFIX)/bin/$(MODULE)
+
+clean:
+	rm $(MODULE)
