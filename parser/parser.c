@@ -7,7 +7,7 @@ typedef struct {
 } parser_t;
 
 token_t eof_tok = {
-	.location = location_new(0, 0),
+	.location = {0, 0},
 	.type = TOKEN_EOF,
 	.value = NULL
 };

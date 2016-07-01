@@ -1,6 +1,6 @@
 CC := gcc
 PREFIX := /usr/local
-CFLAGS := -I. -Wall -lm
+CFLAGS := -std=c99 -I. -Wall -lm
 MODULE := liszt
 FILES := core/util.c \
 		core/val.c \

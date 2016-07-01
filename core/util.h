@@ -16,9 +16,9 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32)
 char* strdup(const char* str);
-char* strndup(const char* str, size_t n);
 #endif
 
+char* strndup(const char* str, size_t n);
 char* concat(char *s1, char *s2);
 
 // djb2 hashing algorithm

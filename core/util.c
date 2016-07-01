@@ -10,6 +10,7 @@ char* strdup(const char* str) {
 	memcpy(copy, str, len);
 	return copy;
 }
+#endif
 
 char* strndup(const char* str, size_t n) {
     const char* t = str;
@@ -21,7 +22,6 @@ char* strndup(const char* str, size_t n) {
     *p = 0;
     return r;
 }
-#endif
 
 char* concat(char* s1, char* s2) {
     char *result = malloc(strlen(s1) + strlen(s2) + 1);

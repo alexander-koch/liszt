@@ -4,8 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-typedef struct
-{
+typedef struct {
 	uint8_t* data;
 	int count;
 	int capacity;
